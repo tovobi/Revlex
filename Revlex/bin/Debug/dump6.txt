@@ -1,0 +1,66 @@
+1>Attack~0
+Beast Slaying~0
+Berserking~0
+Bow Specialization~0
+Dodge~0
+Regeneration~0
+Shoot~0
+Throwing Specialization~0
+Amplify Magic~0
+Arcane Brilliance~0
+Arcane Explosion~0
+Arcane Intellect~0
+Arcane Missiles~0
+Arcane Power~0
+Blink~0
+Clearcasting~0
+Conjure Food~0
+Conjure Mana Agate~0
+Conjure Mana Citrine~0
+Conjure Mana Jade~0
+Conjure Mana Ruby~0
+Conjure Water~0
+Counterspell~0
+Dampen Magic~0
+Detect Magic~0
+Evocation~0
+Mage Armor~0
+Mana Shield~0
+Polymorph~0
+Polymorph: Cow~0
+Polymorph: Pig~0
+Polymorph: Turtle~0
+Portal: Orgrimmar~0
+Portal: Thunder Bluff~0
+Portal: Undercity~0
+Presence of Mind~0
+Remove Lesser Curse~0
+Slow Fall~0
+Teleport: Orgrimmar~0
+Teleport: Thunder Bluff~0
+Teleport: Undercity~0
+Blast Wave~0
+Combustion~0
+Felfire~0
+Fire Blast~0
+Fire Ward~0
+Fireball~0
+Flamestrike~0
+Ignite~0
+Pyroblast~0
+Scorch~0
+Blizzard~0
+Chilled~0
+Cold Snap~0
+Cone of Cold~0
+Frost Armor~0
+Frost Nova~0
+Frost Ward~0
+Frostbolt~0
+Ice Armor~0
+Ice Barrier~0
+Ice Block~0<
+2>no_player_buffs~0<
+3>no_player_debuffs~0<
+4>no_target_buffs~0<
+5>no_target_debuffs~0<

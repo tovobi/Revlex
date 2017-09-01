@@ -1,0 +1,14 @@
+C:\Users\eb\Documents\Visual Studio 2017\Projects\Revlex\Revlex\obj\Release\Revlex.Form1.resources
+C:\Users\eb\Documents\Visual Studio 2017\Projects\Revlex\Revlex\obj\Release\Revlex.Properties.Resources.resources
+C:\Users\eb\Documents\Visual Studio 2017\Projects\Revlex\Revlex\obj\Release\Revlex.csproj.GenerateResource.Cache
+C:\Users\eb\Documents\Visual Studio 2017\Projects\Revlex\Revlex\bin\Release\NLog.config
+C:\Users\eb\Documents\Visual Studio 2017\Projects\Revlex\Revlex\bin\Release\Revlex.exe.config
+C:\Users\eb\Documents\Visual Studio 2017\Projects\Revlex\Revlex\bin\Release\Revlex.exe
+C:\Users\eb\Documents\Visual Studio 2017\Projects\Revlex\Revlex\bin\Release\Revlex.pdb
+C:\Users\eb\Documents\Visual Studio 2017\Projects\Revlex\Revlex\bin\Release\NLog.dll
+C:\Users\eb\Documents\Visual Studio 2017\Projects\Revlex\Revlex\bin\Release\NLog.Windows.Forms.dll
+C:\Users\eb\Documents\Visual Studio 2017\Projects\Revlex\Revlex\bin\Release\NLog.xml
+C:\Users\eb\Documents\Visual Studio 2017\Projects\Revlex\Revlex\bin\Release\NLog.Windows.Forms.xml
+C:\Users\eb\Documents\Visual Studio 2017\Projects\Revlex\Revlex\obj\Release\Revlex.csprojResolveAssemblyReference.cache
+C:\Users\eb\Documents\Visual Studio 2017\Projects\Revlex\Revlex\obj\Release\Revlex.exe
+C:\Users\eb\Documents\Visual Studio 2017\Projects\Revlex\Revlex\obj\Release\Revlex.pdb

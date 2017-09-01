@@ -1,0 +1,2 @@
+ Detect Magic
+ 0
