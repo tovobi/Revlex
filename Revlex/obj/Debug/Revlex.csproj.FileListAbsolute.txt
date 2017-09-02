@@ -45,3 +45,21 @@ C:\Users\eb\Documents\Visual Studio 2017\Projects\Revlex\Revlex\obj\Debug\Revlex
 C:\Users\eb\Documents\Visual Studio 2017\Projects\Revlex\Revlex\obj\Debug\Revlex.csproj.GenerateResource.Cache
 C:\Users\eb\Documents\Visual Studio 2017\Projects\Revlex\Revlex\obj\Debug\Revlex.exe
 C:\Users\eb\Documents\Visual Studio 2017\Projects\Revlex\Revlex\obj\Debug\Revlex.pdb
+c:\Users\eb\Eigene Dateien\Visual Studio 2017\Projects\Revlex\Revlex\bin\Debug\NLog.config
+c:\Users\eb\Eigene Dateien\Visual Studio 2017\Projects\Revlex\Revlex\bin\Debug\Revlex.exe.config
+c:\Users\eb\Eigene Dateien\Visual Studio 2017\Projects\Revlex\Revlex\bin\Debug\Revlex.exe
+c:\Users\eb\Eigene Dateien\Visual Studio 2017\Projects\Revlex\Revlex\bin\Debug\Revlex.pdb
+c:\Users\eb\Eigene Dateien\Visual Studio 2017\Projects\Revlex\Revlex\bin\Debug\NLog.dll
+c:\Users\eb\Eigene Dateien\Visual Studio 2017\Projects\Revlex\Revlex\bin\Debug\NLog.Windows.Forms.dll
+c:\Users\eb\Eigene Dateien\Visual Studio 2017\Projects\Revlex\Revlex\bin\Debug\NLog.xml
+c:\Users\eb\Eigene Dateien\Visual Studio 2017\Projects\Revlex\Revlex\bin\Debug\NLog.Windows.Forms.xml
+c:\Users\eb\Eigene Dateien\Visual Studio 2017\Projects\Revlex\Revlex\obj\Debug\Revlex.csprojResolveAssemblyReference.cache
+c:\Users\eb\Eigene Dateien\Visual Studio 2017\Projects\Revlex\Revlex\obj\Debug\Revlex.Form1.resources
+c:\Users\eb\Eigene Dateien\Visual Studio 2017\Projects\Revlex\Revlex\obj\Debug\Revlex.Properties.Resources.resources
+c:\Users\eb\Eigene Dateien\Visual Studio 2017\Projects\Revlex\Revlex\obj\Debug\Revlex.csproj.GenerateResource.Cache
+c:\Users\eb\Eigene Dateien\Visual Studio 2017\Projects\Revlex\Revlex\obj\Debug\Revlex.exe
+c:\Users\eb\Eigene Dateien\Visual Studio 2017\Projects\Revlex\Revlex\obj\Debug\Revlex.pdb
+C:\Users\eb\Documents\Visual Studio 2017\Projects\Revlex\Revlex\bin\Debug\Revlex.exe.manifest
+C:\Users\eb\Documents\Visual Studio 2017\Projects\Revlex\Revlex\bin\Debug\Revlex.application
+C:\Users\eb\Documents\Visual Studio 2017\Projects\Revlex\Revlex\obj\Debug\Revlex.exe.manifest
+C:\Users\eb\Documents\Visual Studio 2017\Projects\Revlex\Revlex\obj\Debug\Revlex.application

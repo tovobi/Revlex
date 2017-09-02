@@ -33,7 +33,7 @@ namespace Revlex
 		List<WowObject> Targets10Within40;
 		List<WowObject> Targets12Within5;
 		uint RapidSequence = 0;
-
+        
 		public CustomRotation() : base()
 		{
 		}
@@ -415,7 +415,7 @@ namespace Revlex
 
 			GeneralActionsTank();
 			StartMeleeAttack();
-			Log.Print("- " + Targets12Within5.Count());
+			//Log.Print("- " + Targets12Within5.Count());
 
 			float tempRevengeCd = WowHelperObj.GetSpellCooldown("Revenge");
 			float tempShieldBlockCd = WowHelperObj.GetSpellCooldown("Shield Block");
