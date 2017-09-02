@@ -123,36 +123,36 @@ namespace Revlex
 					CastSpell("Hamstring");
 					Log.Print("Cast: Hamstring");
 				}
-				// Blood rage when no rage for overpower 
-				if (WowHelperObj.GetSpellCooldown("Bloodrage") <= 0 && Target.Dodged >= 1 && tempOvrpwrCd < CdOffset && Me.Rage < 5 && TargetHealthFactor(80))
-				{
-					CastSpell("Bloodrage", false, true);
-					Log.Print("Cast: Blood Rage (overpower)");
-				}
+				//// Blood rage when no rage for overpower 
+				//if (WowHelperObj.GetSpellCooldown("Bloodrage") <= 0 && Target.Dodged >= 1 && tempOvrpwrCd < CdOffset && Me.Rage < 5 && TargetHealthFactor(80))
+				//{
+				//	CastSpell("Bloodrage", false, true);
+				//	Log.Print("Cast: Blood Rage (overpower)");
+				//}
 				//Overpower
 				if (Target.Dodged >= 1 && tempOvrpwrCd < CdOffset && Me.Rage >= 5)
 				{
 					CastSpell("Overpower");
 					Log.Print("Cast: Overpower");
 				}
-				// Blood rage when no battleshout is active
-				if (WowHelperObj.GetSpellCooldown("Bloodrage") <= 0 && !WowHelperObj.UnitHasBuff(Me, "Battle Shout") && Me.Rage <= 5 && TargetHealthFactor(80))
-				{
-					CastSpell("Bloodrage", false, true);
-					Log.Print("Cast: Bloodrage (battleshout)");
-				}
-				//Bloodrage when last cast of battleshout is max 60sec ago
-				if (WowHelperObj.GetSpellCooldown("Bloodrage") < 0.3 && WowHelperObj.UnitHasBuff(Me, "Battle Shout") && Me.Rage <= 10 && WowHelperObj.SpellsInSpellBook.Where(C => C.Name == "Battle Shout").FirstOrDefault().LastCast > WowHelpers.GetTime() - 60000 && TargetHealthFactor(80))
-				{
-					CastSpell("Bloodrage");
-					Log.Print("Cast: Bloodrage (more Damage)");
-				}
-				//Bloodrage with more then 1 Target 
-				if (WowHelperObj.GetSpellCooldown("Bloodrage") < 0.3 && Me.Rage <= 15 && TargetHealthFactor(80))
-				{
-					CastSpell("Bloodrage");
-					Log.Print("Cast: Bloodrage Multitarget");
-				}
+				//// Blood rage when no battleshout is active
+				//if (WowHelperObj.GetSpellCooldown("Bloodrage") <= 0 && !WowHelperObj.UnitHasBuff(Me, "Battle Shout") && Me.Rage <= 5 && TargetHealthFactor(80))
+				//{
+				//	CastSpell("Bloodrage", false, true);
+				//	Log.Print("Cast: Bloodrage (battleshout)");
+				//}
+				////Bloodrage when last cast of battleshout is max 60sec ago
+				//if (WowHelperObj.GetSpellCooldown("Bloodrage") < 0.3 && WowHelperObj.UnitHasBuff(Me, "Battle Shout") && Me.Rage <= 10 && WowHelperObj.SpellsInSpellBook.Where(C => C.Name == "Battle Shout").FirstOrDefault().LastCast > WowHelpers.GetTime() - 60000 && TargetHealthFactor(80))
+				//{
+				//	CastSpell("Bloodrage");
+				//	Log.Print("Cast: Bloodrage (more Damage)");
+				//}
+				////Bloodrage with more then 1 Target 
+				//if (WowHelperObj.GetSpellCooldown("Bloodrage") < 0.3 && Me.Rage <= 15 && TargetHealthFactor(80))
+				//{
+				//	CastSpell("Bloodrage");
+				//	Log.Print("Cast: Bloodrage Multitarget");
+				//}
 
 				//Rend only when target health is more then the half of my maxhealth
 				if (!WowHelperObj.UnitHasDebuff(Target, "Rend") && Me.Rage >= 10 && TargetHealthFactor(60, 1.5f))
