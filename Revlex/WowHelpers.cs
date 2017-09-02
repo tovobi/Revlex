@@ -387,15 +387,15 @@ namespace Revlex
 
 		public WowObject AggroOnParty(double radius = 40, int maxNumberToScan = 10)
 		{
-			//List<WowObject> unitList = CachedUnitlist.Where(c => c.Distance < radius && c.IsInCombat && c.TargetGuid != LocalPlayer.Guid && !c.Target.IsHostile && c.IsHostile && c.Target.Guid != 0 && !c.HasBreakableCc).ToList();
-			List<WowObject> unitList = CachedUnitlist.Where(c => c.Distance < radius && c.IsHostile && !c.HasBreakableCc && c.PlayerIsFacingTo < 1.0).ToList();
+			List<WowObject> unitList = CachedUnitlist.Where(c => c.Distance < radius && c.IsInCombat && c.TargetGuid != LocalPlayer.Guid && !c.Target.IsHostile && c.IsHostile && c.Target.Guid != 0 && !c.HasBreakableCc).ToList();
+			//List<WowObject> unitList = CachedUnitlist.Where(c => c.Distance < radius && c.IsHostile && !c.HasBreakableCc && c.PlayerIsFacingTo < 1.0).ToList();
 			WowObject unit = unitList.OrderBy(c => c.Distance).FirstOrDefault();
 			return unit ?? new WowObject();
 		}
 		public WowObject AggroOnWeak(double radius = 40, int maxNumberToScan = 10)
 		{
-			//List<WowObject> unitList = CachedUnitlist.Where(c => c.Distance < radius && c.IsInCombat && c.TargetGuid != LocalPlayer.Guid && !c.Target.IsHostile && c.IsHostile && c.Target.Guid != 0 && !c.HasBreakableCc && (c.Target.Class == "Priest" || c.Target.Class == "Druid" || c.Target.Class == "Shaman" || c.Target.Class == "Paladin" || c.Target.HealthPercent < 30)).ToList();
-			List<WowObject> unitList = CachedUnitlist.Where(c => c.Distance < radius && c.IsHostile && !c.HasBreakableCc && c.PlayerIsFacingTo < 0.5).ToList();
+			List<WowObject> unitList = CachedUnitlist.Where(c => c.Distance < radius && c.IsInCombat && c.TargetGuid != LocalPlayer.Guid && !c.Target.IsHostile && c.IsHostile && c.Target.Guid != 0 && !c.HasBreakableCc && (c.Target.Class == "Priest" || c.Target.Class == "Druid" || c.Target.Class == "Shaman" || c.Target.Class == "Paladin" || c.Target.HealthPercent < 30)).ToList();
+			//List<WowObject> unitList = CachedUnitlist.Where(c => c.Distance < radius && c.IsHostile && !c.HasBreakableCc && c.PlayerIsFacingTo < 0.5).ToList();
 			WowObject unit = unitList.OrderBy(c => c.Distance).FirstOrDefault();
 			return unit ?? new WowObject();
 		}
