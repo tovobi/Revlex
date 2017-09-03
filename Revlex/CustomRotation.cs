@@ -800,5 +800,5 @@ namespace Revlex
 	}
 }
 /* 
- Kein Target-switch und sunder/evenge bei CC -> auf Debuff prüfen
+ im realbetrieb hat er dauernt thunderclap gemacht, obwohl ein NPC gesheept war
   */

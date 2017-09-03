@@ -326,7 +326,7 @@ namespace Revlex
 			//Targets12Within5.ForEach(x => x.tempBuffStacks = ((WowHelperObj.GetUnitBuffs(x).FirstOrDefault(c => c.Name == "Sunder Armor")).Stacks ?? 0));
 			Auras tempEmptyAura = new Auras("", 1, _stacks: 0);
 			//Scans all Targets for "Sunder Armor"-Debuff and assign the stacks to the respective WowObject, if no Auras-Object, it returns stacks a new empty Object of Auras via Null-Coalesce Operator
-			List<WowObject> tempList = CachedUnitlist.Where(o => o.Distance <= radius && o.Type == (short)Constants.ObjType.OT_UNIT && !o.HasBreakableCc).Take(maxNumberToScan).ToList();
+			List<WowObject> tempList = CachedUnitlist.Where(o => o.Distance <= radius && o.Health > 0 && o.Type == (short)Constants.ObjType.OT_UNIT && !o.HasBreakableCc).Take(maxNumberToScan).ToList();
 			foreach (WowObject x in tempList)
 			{
 				x.tempNextSpell = "";
@@ -355,30 +355,43 @@ namespace Revlex
 			//Targets12Within5.ForEach(x => x.tempBuffStacks = ((WowHelperObj.GetUnitBuffs(x).FirstOrDefault(c => c.Name == "Sunder Armor")).Stacks ?? 0));
 			Auras tempEmptyAura = new Auras("", 1, _stacks: 0);
 			//Scans all Targets for "Sunder Armor"-Debuff and assign the stacks to the respective WowObject, if no Auras-Object, it returns stacks a new empty Object of Auras via Null-Coalesce Operator
-			List<WowObject> tempList = CachedUnitlist.Where(o => o.Distance <= radius && o.Type == (short)Constants.ObjType.OT_UNIT && !o.HasBreakableCc).Take(maxNumberToScan).ToList();
+			List<WowObject> tempList = CachedUnitlist.Where(o => o.Distance <= radius && o.Health > 0 && o.Type == (short)Constants.ObjType.OT_UNIT && !o.HasBreakableCc).Take(maxNumberToScan).ToList();
 			tempList.ForEach(x => x.tempBuffStacks = (GetUnitDebuffs(x).FirstOrDefault(c => c.Name == aura) ?? tempEmptyAura).Stacks);
-			// now return the object with the least stack of sunder armor, if no such object is returned, the ??-Operator choose the current target		
-			//List<WowObject> tempList2 = tempList;
-			//tempList2.OrderBy(c => c.tempBuffStacks);
-			//foreach (WowObject x in tempList2)
-			//{
-			//	Log.Print(x.Guid.ToString() + " : " + x.tempBuffStacks);
-			//	List<Auras> tempEmptyAura2 = GetUnitDebuffs(x);
-			//	foreach (Auras z in tempEmptyAura2)
-			//	{
-			//		Log.Print(" Aura: " + z.Name);
-			//	}
-			//}
-			//Log.Print("GetBestTankTarget(): AggroOnWeak: " + AggroOnWeak(40).Guid + "   AggroOnParty: " + AggroOnParty(40).Guid + "   pref: " + tempList.OrderBy(c => c.tempBuffStacks).FirstOrDefault().Guid.ToString() + " |    tar: " + LocalPlayer.Target.Guid + " |   next Hostile: " + CachedUnitlist.FirstOrDefault(c => c.IsHostile).Guid.ToString());
-			//Log.Print("AW: " + AggroOnWeak(40).PlayerIsFacingTo + "   AP: " + AggroOnParty(40).PlayerIsFacingTo + "   tar: " + LocalPlayer.Target.PlayerIsFacingTo);
-			if (AggroOnWeak(40).Guid != 0)
-				return AggroOnWeak(40);
-			else if (AggroOnParty(40).Guid != 0)
-				return AggroOnParty(40);
-			else if (tempList.OrderBy(c => c.tempBuffStacks).FirstOrDefault().Guid != 0)
-				return tempList.OrderBy(c => c.tempBuffStacks).FirstOrDefault();
-			else if (LocalPlayer.Target.Guid != 0)
-				return LocalPlayer.Target;
+            // now return the object with the least stack of sunder armor, if no such object is returned, the ??-Operator choose the current target		
+            //List<WowObject> tempList2 = tempList;
+            //tempList2.OrderBy(c => c.tempBuffStacks);
+            //foreach (WowObject x in tempList2)
+            //{
+            //	Log.Print(x.Guid.ToString() + " : " + x.tempBuffStacks);
+            //	List<Auras> tempEmptyAura2 = GetUnitDebuffs(x);
+            //	foreach (Auras z in tempEmptyAura2)
+            //	{
+            //		Log.Print(" Aura: " + z.Name);
+            //	}
+            //}
+            //Log.Print("GetBestTankTarget(): AggroOnWeak: " + AggroOnWeak(40).Guid + "   AggroOnParty: " + AggroOnParty(40).Guid + "   pref: " + tempList.OrderBy(c => c.tempBuffStacks).FirstOrDefault().Guid.ToString() + " |    tar: " + LocalPlayer.Target.Guid + " |   next Hostile: " + CachedUnitlist.FirstOrDefault(c => c.IsHostile).Guid.ToString());
+            //Log.Print("AW: " + AggroOnWeak(40).PlayerIsFacingTo + "   AP: " + AggroOnParty(40).PlayerIsFacingTo + "   tar: " + LocalPlayer.Target.PlayerIsFacingTo);
+            if (AggroOnWeak(40).Guid != 0)
+            {
+                Log.Print("AggroOnWeak(40): " + AggroOnWeak(40).Guid);
+                return AggroOnWeak(40);
+            }
+            else if (AggroOnParty(40).Guid != 0)
+            {
+                Log.Print("AggroOnParty(40): " + AggroOnParty(40).Guid);
+                return AggroOnParty(40);
+            }
+            else if (tempList.OrderBy(c => c.tempBuffStacks).FirstOrDefault().Guid != 0)
+            {
+                WowObject zop = tempList.OrderBy(c => c.tempBuffStacks).FirstOrDefault();
+                Log.Print("tempList.OrderBy(c => c.tempBuffStacks).FirstOrDefault(): " + zop.Guid + " " + zop.Name + " " + zop.Distance);
+                return tempList.OrderBy(c => c.tempBuffStacks).FirstOrDefault();
+            }
+            else if (LocalPlayer.Target.Guid != 0)
+            {
+                Log.Print("LocalPlayer.Target: " + LocalPlayer.Target.Guid);
+                return LocalPlayer.Target;
+            }
 
 			return CachedUnitlist.FirstOrDefault(c => c.IsHostile);
 			//tempPreferedTar = AggroOnWeak(40, 10) ?? AggroOnParty(40, 10) ?? tempList.OrderBy(c => c.tempBuffStacks).FirstOrDefault() ?? LocalPlayer.Target ?? CachedUnitlist.FirstOrDefault(c => c.IsHostile);
@@ -387,14 +400,14 @@ namespace Revlex
 
 		public WowObject AggroOnParty(double radius = 40, int maxNumberToScan = 10)
 		{
-			List<WowObject> unitList = CachedUnitlist.Where(c => c.Distance < radius && c.IsInCombat && c.TargetGuid != LocalPlayer.Guid && !c.Target.IsHostile && c.IsHostile && c.Target.Guid != 0 && !c.HasBreakableCc).ToList();
+			List<WowObject> unitList = CachedUnitlist.Where(c => c.Distance < radius && c.Health > 0 && c.IsInCombat && c.TargetGuid != LocalPlayer.Guid && !c.Target.IsHostile && c.IsHostile && c.Target.Guid != 0 && !c.HasBreakableCc).ToList();
 			//List<WowObject> unitList = CachedUnitlist.Where(c => c.Distance < radius && c.IsHostile && !c.HasBreakableCc && c.PlayerIsFacingTo < 1.0).ToList();
 			WowObject unit = unitList.OrderBy(c => c.Distance).FirstOrDefault();
 			return unit ?? new WowObject();
 		}
 		public WowObject AggroOnWeak(double radius = 40, int maxNumberToScan = 10)
 		{
-			List<WowObject> unitList = CachedUnitlist.Where(c => c.Distance < radius && c.IsInCombat && c.TargetGuid != LocalPlayer.Guid && !c.Target.IsHostile && c.IsHostile && c.Target.Guid != 0 && !c.HasBreakableCc && (c.Target.Class == "Priest" || c.Target.Class == "Druid" || c.Target.Class == "Shaman" || c.Target.Class == "Paladin" || c.Target.HealthPercent < 30)).ToList();
+			List<WowObject> unitList = CachedUnitlist.Where(c => c.Distance < radius && c.Health > 0 && c.IsInCombat && c.TargetGuid != LocalPlayer.Guid && !c.Target.IsHostile && c.IsHostile && c.Target.Guid != 0 && !c.HasBreakableCc && (c.Target.Class == "Priest" || c.Target.Class == "Druid" || c.Target.Class == "Shaman" || c.Target.Class == "Paladin" || c.Target.HealthPercent < 30)).ToList();
 			//List<WowObject> unitList = CachedUnitlist.Where(c => c.Distance < radius && c.IsHostile && !c.HasBreakableCc && c.PlayerIsFacingTo < 0.5).ToList();
 			WowObject unit = unitList.OrderBy(c => c.Distance).FirstOrDefault();
 			return unit ?? new WowObject();
@@ -404,7 +417,7 @@ namespace Revlex
 		public List<WowObject> GetCastingEnemies(double radius = 15, int maxNumberToScan = 5)
 		{
 			Log.Print("GetCastingEnemies");
-			return CachedUnitlist.Where(c => (c.CastSpell > 0 || c.ChannelSpell > 0) &&  c.IsHostile && c.Distance <= radius && c.PlayerIsFacingTo < 1.5).Take(maxNumberToScan).ToList();
+			return CachedUnitlist.Where(c => (c.CastSpell > 0 || c.ChannelSpell > 0) &&  c.IsHostile && c.Distance <= radius && c.Health > 0 && c.PlayerIsFacingTo < 1.5).Take(maxNumberToScan).ToList();
 		}
 
 
@@ -412,7 +425,7 @@ namespace Revlex
 		public List<WowObject> GetNearEnemies(double radius = 15, int maxNumberToScan = 5)
 		{
 			//Log.Print("GetNearEnemies("+radius+", "+maxNumberToScan+"): ",0,0);
-			List<WowObject> tempList = CachedUnitlist.Where(c => c.IsHostile && c.Distance <= radius).Take(maxNumberToScan).ToList();
+			List<WowObject> tempList = CachedUnitlist.Where(c => c.IsHostile && c.Health > 0 && c.Distance <= radius).Take(maxNumberToScan).ToList();
 			//foreach (WowObject x in tempList)
 			//{
 			//	Log.Print(x.Name+", ",0,0);
