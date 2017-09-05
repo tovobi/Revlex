@@ -87,15 +87,25 @@ namespace Revlex
 		public void CheckForHostileFaction()
 		{
 			//check for hostile faction
-			if (WowHelperObj.LocalPlayer.Target.DynamicFlags == (uint)Pointers.DynamicFlags.TappedByMe)
-			{
-				if (!WowHelperObj.HostileFaction[WowHelperObj.LocalPlayer.Target.FactionTemplate] && !WowHelperObj.IsHostile(WowHelperObj.LocalPlayer.Target))
-				{
-					Log.Print("Marked " + WowHelperObj.LocalPlayer.Target.FactionTemplate + " as hostile");
-				}
-				WowHelperObj.HostileFaction[WowHelperObj.LocalPlayer.Target.FactionTemplate] = true;
-			}
-		}
+			//if (WowHelperObj.LocalPlayer.Target.DynamicFlags == (uint)Pointers.DynamicFlags.TappedByMe)
+			//{
+			//	if (!WowHelperObj.HostileFaction[WowHelperObj.LocalPlayer.Target.FactionTemplate] && !WowHelperObj.IsHostile(WowHelperObj.LocalPlayer.Target))
+			//	{
+			//		Log.Print("Marked " + WowHelperObj.LocalPlayer.Target.FactionTemplate + " as hostile");
+			//	}
+			//	WowHelperObj.HostileFaction[WowHelperObj.LocalPlayer.Target.FactionTemplate] = true;
+			//}
+
+            //check for hostile faction
+            if (WowHelperObj.LocalPlayer.GuidOfAutoAttackTarget > 0)
+            {
+                if (!WowHelperObj.HostileFaction[WowHelperObj.LocalPlayer.Target.FactionTemplate] && !WowHelperObj.IsHostile(WowHelperObj.LocalPlayer.Target))
+                {
+                    Log.Print("Marked " + WowHelperObj.LocalPlayer.Target.FactionTemplate + " as hostile");
+                }
+                WowHelperObj.HostileFaction[WowHelperObj.LocalPlayer.Target.FactionTemplate] = true;
+            }
+        }
 
 		public void StartMeleeAttack()
 		{

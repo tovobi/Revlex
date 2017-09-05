@@ -416,8 +416,33 @@ namespace Revlex
 
 		public List<WowObject> GetCastingEnemies(double radius = 15, int maxNumberToScan = 5)
 		{
-			Log.Print("GetCastingEnemies");
-			return CachedUnitlist.Where(c => (c.CastSpell > 0 || c.ChannelSpell > 0) &&  c.IsHostile && c.Distance <= radius && c.Health > 0 && c.PlayerIsFacingTo < 1.5).Take(maxNumberToScan).ToList();
+			//Log.Print("GetCastingEnemies");
+   //         List<WowObject> tempTarList0 = CachedUnitlist.Where(c => c.IsHostile && c.Health > 0).ToList();
+   //         List<WowObject> tempTarList1 = CachedUnitlist.Where(c => c.Distance <= radius && c.Health > 0).ToList();
+   //         List<WowObject> tempTarList2 = tempTarList1.Where(c => (c.CastSpell > 0 || c.ChannelSpell > 0) && c.IsHostile).ToList();
+   //         List<WowObject> tempTarList3 = tempTarList2.Where(c => c.PlayerIsFacingTo < 1.5).ToList();
+   //         foreach (WowObject x in tempTarList0)
+   //         {
+   //             Log.Print("X: " + x.Guid + " " + x.Name);
+   //         }
+   //         Log.Br();
+   //         foreach (WowObject x in tempTarList1)
+   //         {
+   //             Log.Print("A: " + x.Guid + " " + x.Name);
+   //         }
+   //         Log.Br();
+   //         foreach (WowObject x in tempTarList2)
+   //         {
+   //             Log.Print("B: " + x.Guid + " " + x.Name);
+   //         }
+   //         Log.Br();
+   //         foreach (WowObject x in tempTarList3)
+   //         {
+   //             Log.Print("C: " + x.Guid + " " + x.Name);
+   //         }
+   //         Log.Br();
+
+            return CachedUnitlist.Where(c => (c.CastSpell > 0 || c.ChannelSpell > 0) &&  c.IsHostile && c.Distance <= radius && c.Health > 0 && c.PlayerIsFacingTo < 1.5).Take(maxNumberToScan).ToList();
 		}
 
 

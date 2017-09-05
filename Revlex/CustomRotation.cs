@@ -246,8 +246,6 @@ namespace Revlex
 
 			}
 
-
-
 			// Shield Bash with autoswitch weapons and auto switch targets when in Battle or Def Stance
 			if (TargetsCastingWithin5.Count() > 0 && (WowHelperObj.UnitHasBuff(Me,2457) || WowHelperObj.UnitHasBuff(Me,71)))
 			{
@@ -415,9 +413,13 @@ namespace Revlex
 
 			GeneralActionsTank();
 			StartMeleeAttack();
-			//Log.Print("- " + Targets12Within5.Count());
+            //Log.Print("- " + Targets12Within5.Count());
+            WowObject tempCC = WowHelperObj.CachedUnitlist.FirstOrDefault(c => c.HasBreakableCc) ?? new WowObject();
+            WowObject tempCast = WowHelperObj.CachedUnitlist.FirstOrDefault(c => (c.CastSpell > 0 || c.ChannelSpell > 0)) ?? new WowObject();
+            Log.Print("CC:   " + tempCC.Guid + " " + tempCC.Name);
+            Log.Print("Cast: " + tempCast.Guid + " " + tempCast.Name);
 
-			float tempRevengeCd = WowHelperObj.GetSpellCooldown("Revenge");
+            float tempRevengeCd = WowHelperObj.GetSpellCooldown("Revenge");
 			float tempShieldBlockCd = WowHelperObj.GetSpellCooldown("Shield Block");
 			float tempOvrpwrCd = WowHelperObj.GetSpellCooldown("Overpower");
 			float tempThuClaCd = WowHelperObj.GetSpellCooldown("Thunder Clap");
@@ -428,7 +430,7 @@ namespace Revlex
 			bool tempHasBattleSt = WowHelperObj.UnitHasBuff(Me, 2457);
 			//bool overpowerReadyTank = Target.Dodged >= 1  && tempOvrpwrCd < CdOffset && Me.Health >= 66 &&((Me.Rage >= 5 && Me.Rage <= 15 && !tempHasBattleSt) || (Me.Rage >= 5 && tempHasBattleSt));
 			bool overpowerReadyTank = Target.Dodged >= 1 && tempOvrpwrCd < CdOffset && Me.Rage >= 5 && tempHasBattleSt;
-			bool thunderClapReadyTank = tempThuClaCd < CdOffset && Me.Health >= 66 && ((Me.Rage >= 20 && Me.Rage <= 30 && !tempHasBattleSt) || (Me.Rage >= 20 && tempHasBattleSt)) && ((double)Targets12Within5.Count(c => c.DebuffList.Exists(o => o.Name == "Thunder Clap")) / (double)Targets12Within5.Count * 100 <= 50);
+			bool thunderClapReadyTank = tempThuClaCd < CdOffset && Me.Health >= 66 && ((Me.Rage >= 20 && Me.Rage <= 30 && !tempHasBattleSt) || (Me.Rage >= 20 && tempHasBattleSt)) && ((double)Targets12Within5.Count(c => c.DebuffList.Exists(o => o.Name == "Thunder Clap")) / (double)Targets12Within5.Count * 100 <= 50) && !WowHelperObj.HostileNpcInCc();
 			bool moBlowReady = tempMoBlowCd < CdOffset && tempTauntCd > CdOffset && tempTauntCd < 8 && WowHelperObj.AggroOnWeak().Guid != 0 && Me.Rage >= 10;
 
 			RageBefore = 0;
