@@ -632,7 +632,7 @@ namespace Revlex
 				}
 				if (listObj.Type == (short)Constants.ObjType.OT_PLAYER || listObj.Type == (short)Constants.ObjType.OT_UNIT || listObj.Type == (short)Constants.ObjType.OT_GAMEOBJ)
 				{
-					if (listObj.vector3d != null)
+					if (listObj.vector3d != null && LocalPlayer.vector3d != null)
 					{
 						listObj.Distance = Math.Round((LocalPlayer.vector3d.Distance(listObj.vector3d)), 2);
 					}
