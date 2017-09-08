@@ -450,7 +450,7 @@ namespace Revlex
 		public List<WowObject> GetNearEnemies(double radius = 15, int maxNumberToScan = 5)
 		{
 			//Log.Print("GetNearEnemies("+radius+", "+maxNumberToScan+"): ",0,0);
-			List<WowObject> tempList = CachedUnitlist.Where(c => c.IsHostile && c.Health > 0 && c.Distance <= radius).Take(maxNumberToScan).ToList();
+			List<WowObject> tempList = CachedUnitlist.Where(c => c.IsHostile && c.Health > 10 && c.Distance <= radius).Take(maxNumberToScan).ToList();
 			//foreach (WowObject x in tempList)
 			//{
 			//	Log.Print(x.Name+", ",0,0);
