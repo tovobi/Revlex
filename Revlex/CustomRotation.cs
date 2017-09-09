@@ -111,12 +111,17 @@ namespace Revlex
 			}
 			if (WowHelperObj.HasTarget(Me))
 			{
-				//Execute
-				if (Me.Rage >= 10 && (float)((float)Target.Health / (float)Target.MaxHealth * 100f) < 20f)
-				{
-					CastSpell("Execute");
-					Log.Print("Cast: Execute " + (float)((float)Target.Health / (float)Target.MaxHealth * 100f));
-				}
+                //Execute
+                if ((float)((float)Target.Health / (float)Target.MaxHealth * 100f) < 20f && Target.Type == (short)Constants.ObjType.OT_UNIT && Me.Rage >= 10 && Me.Rage < 30 && Me.Health > Target.Health)
+                {
+                    CastSpell("Execute");
+                    Log.Print("Cast: Execute regular Mob" + (float)((float)Target.Health / (float)Target.MaxHealth * 100f));
+                }
+                else if ((float)((float)Target.Health / (float)Target.MaxHealth * 100f) < 20f && Me.Rage >= 10)
+                {
+                    CastSpell("Execute");
+                    Log.Print("Cast: Execute " + (float)((float)Target.Health / (float)Target.MaxHealth * 100f));
+                }
 				//Hamstring if NPC is fleeing
 				if (Me.Rage >= 10 && Target.IsFleeing)
 				{
@@ -183,7 +188,7 @@ namespace Revlex
 					Log.Print("No Cleave -> CC'ed mob in range");
 				}
 				//MS
-				if (WowHelperObj.GetSpellCooldown("Mortal Strike") < 0.3 && Me.Rage >= 30)
+				if (WowHelperObj.GetSpellCooldown("Mortal Strike") < CdOffset && Me.Rage >= 30)
 				{
 					CastSpell("Mortal Strike");
 					Log.Print("Cast: MS (" + WowHelperObj.GetSpellCooldown(12294).ToString() + ")");
@@ -202,13 +207,13 @@ namespace Revlex
 					Log.Print("Cast: HS (Ragedump)");
 				}
 				//Blood Fury only when target health is more then the half of my maxhealth
-				if (WowHelperObj.GetSpellCooldown("Blood Fury") < 0.3 && TargetHealthFactor(80))
+				if (WowHelperObj.GetSpellCooldown("Blood Fury") < CdOffset && TargetHealthFactor(80))
 				{
 					CastSpell("Blood Fury");
 					Log.Print("Cast: Blood Fury");
 				}
 				//Blood Fury with more then 1 Target 
-				if (WowHelperObj.GetSpellCooldown("Blood Fury") < 0.3 && TargetHealthFactor(50f, 2, (uint)Targets3Within15.Count(), 1.3f))
+				if (WowHelperObj.GetSpellCooldown("Blood Fury") < CdOffset && TargetHealthFactor(50f, 2, (uint)Targets3Within15.Count(), 1.3f))
 				{
 					CastSpell("Blood Fury");
 					Log.Print("Cast: Blood Fury Multitarget");
