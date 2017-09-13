@@ -549,7 +549,13 @@ namespace Revlex
 
 
 
-			// sunder/Revenge
+            // sunder/Revenge
+            if (RapidSequence == 0 && !tempHasDefSt)
+            {
+                CastMacroById(16777224);
+                //CastSpell("Defensive Stance");
+                Log.Print("Cast: Defensive Stance (sunder)");
+            }
 			if (tempHasDefSt && (Me.Rage >= 5 && tempRevengeCd < CdOffset || Me.Rage >= 15))
 			{
 				if (Me.Rage >= 5 && tempRevengeCd < CdOffset)
@@ -567,7 +573,7 @@ namespace Revlex
                     CastSpell("Mortal Strike");
                     Log.Print("Cast: MS");
                 }
-                else if (Me.Rage >= 15)
+                else if (!WowHelperObj.SpellExist((int)WowHelperObj.GetSpellIdFromSpellName("Mortal Strike")) && Me.Rage >= 15)
                 {
                     CastSpell("Heroic Strike");
                     //CastSpellById(11567);
