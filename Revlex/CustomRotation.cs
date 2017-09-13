@@ -557,7 +557,7 @@ namespace Revlex
 					CastSpell("Revenge", true, true);
 					Log.Print("Cast: Revenge");
 				}
-                else if (Me.Rage >= 15 &&  WowHelperObj.GetStacksOfDebuff(Me.Target,"Sunder Armor") < 5)
+                if (Me.Rage >= 15 &&  WowHelperObj.GetStacksOfDebuff(Me.Target,"Sunder Armor") < 5)
                 {
                     CastSpell("Sunder Armor");
                     Log.Print("Cast: Sunder Armor");
