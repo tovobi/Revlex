@@ -817,6 +817,13 @@ namespace Revlex
 			return wowMem.ReadUInt((LocalPlayer.ObjBaseAddress + (uint)Pointers.WowObject.Offhand));
 		}
 
+        public uint GetStacksOfDebuff(WowObject unit, string aura)
+        {
+            Auras tempEmptyAura = new Auras("", 1, _stacks: 0);
+            //Scans all Targets for "Sunder Armor"-Debuff and assign the stacks to the respective WowObject, if no Auras-Object, it returns stacks a new empty Object of Auras via Null-Coalesce Operator
+            return (GetUnitDebuffs(unit).FirstOrDefault(c => c.Name == aura) ?? tempEmptyAura).Stacks;
+        }
+
 		public List<Spells> GetPlayerSpells()
 		{
 			//Log.Print("--GetPlayerSpells()");

@@ -452,82 +452,7 @@ namespace Revlex
 			}
 
 
-			//Taunt
-			if (WowHelperObj.AggroOnWeak().Guid != 0 && !tempHasDefSt && tempTauntCd < CdOffset && SwitchTarget(WowHelperObj.AggroOnWeak()))
-			{
-                CastMacroById(16777224);
-				//CastSpell("Defensive Stance");
-				Log.Print("Cast: Defensive Stance (for Taunt)");
-			}
-			if (WowHelperObj.AggroOnWeak().Guid != 0 && tempHasDefSt && tempTauntCd < CdOffset && SwitchTarget(WowHelperObj.AggroOnWeak()))
-			{
-				CastSpell("Taunt");
-				Log.Print("Cast: Taunt");
-			}
 
-			//Mocking Blow
-			if ((RapidSequence < 700 || RapidSequence > 799) && moBlowReady && !tempHasBattleSt && SwitchTarget(WowHelperObj.AggroOnWeak()))
-			{
-				RapidSequence = 700;
-                CastMacroById(16777227);
-                //CastSpell("Battle Stance");
-				Log.Print("Cast: Battle Stance");
-				LastTimeRapidChanged = WowHelpers.GetTime();
-			}
-			else if ((RapidSequence < 700 || RapidSequence > 799) && moBlowReady && tempHasBattleSt && SwitchTarget(WowHelperObj.AggroOnWeak()))
-			{
-				RapidSequence = 700;
-				Log.Print("already in Battle Stance");
-				LastTimeRapidChanged = WowHelpers.GetTime();
-			}
-			if (RapidSequence == 700 && !tempHasBattleSt && moBlowReady)
-			{
-				RapidSequence = 0;
-				Log.Print("Re-init Cast Battle St");
-				LastTimeRapidChanged = WowHelpers.GetTime();
-			}
-			else if (RapidSequence == 700 && moBlowReady && tempHasBattleSt)
-			{
-				RageBefore = Me.Rage;
-				RapidSequence = 705;
-				CastSpell("Mocking Blow");
-				Log.Print("Cast: Mocking Blow");
-				LastTimeRapidChanged = WowHelpers.GetTime();
-			}
-			else if (RapidSequence == 700 && !moBlowReady && tempHasBattleSt)
-			{
-				RapidSequence = 710;
-                CastMacroById(16777224);
-                //CastSpell("Defensive Stance");
-                Log.Print("Cast: workaround -> Defensive Stance");
-				LastTimeRapidChanged = WowHelpers.GetTime();
-			}
-			Log.Print("  mid moCD: " + moBlowReady + "   me.rage:" + Me.Rage + "   ragebefore: " + RageBefore);
-			if (RapidSequence == 705 && !moBlowReady)
-			{
-				RapidSequence = 710;
-                CastMacroById(16777224);
-                //CastSpell("Defensive Stance");
-                Log.Print("Cast: Defensive Stance");
-				LastTimeRapidChanged = WowHelpers.GetTime();
-			}
-			else if (RapidSequence == 705 && moBlowReady)
-			{
-				RapidSequence = 700;
-				Log.Print("Re-init Mocking Blow");
-				LastTimeRapidChanged = WowHelpers.GetTime();
-			}
-			if (RapidSequence == 710 && !tempHasDefSt)
-			{
-				RapidSequence = 705;
-				Log.Print("Re-init Cast Def St");
-				LastTimeRapidChanged = WowHelpers.GetTime();
-			}
-			else if (RapidSequence == 710 && tempHasDefSt)
-			{
-				RapidSequence = 0;
-				LastTimeRapidChanged = WowHelpers.GetTime();
-			}
 
 
 
@@ -604,7 +529,6 @@ namespace Revlex
 
 			// Overpower only if in Battlestance
 			//Log.Print("--------Start Rapid: " + RapidSequence + "    overpowerReady: "+ overpowerReadyTank + "  ovpCD: "+ tempOvrpwrCd);
-			#region Overpower without stancedance
 			// Rapid Sequence 300: Overpower with stancedance
 			// ---
 			if (overpowerReadyTank)
@@ -613,86 +537,7 @@ namespace Revlex
 				Log.Print("Cast: Overpower");
 			}
 
-			#endregion
 
-			#region Rapid Sequence 300: Overpower with stancedance
-			//// Rapid Sequence 300: Overpower with stancedance
-			//// ---
-			//if ((RapidSequence < 300 || RapidSequence > 399) && overpowerReadyTank && !tempHasBattleSt)
-			//{
-			//	RapidSequence = 300;
-			//	CastSpell("Battle Stance");
-			//	Log.Print("Cast: Battle Stance");
-			//	LastTimeRapidChanged = WowHelpers.GetTime();
-			//}
-			//else if ((RapidSequence < 300 || RapidSequence > 399) && overpowerReadyTank && tempHasBattleSt)
-			//{
-			//	RapidSequence = 300;
-			//	Log.Print("already in Battle Stance");
-			//	LastTimeRapidChanged = WowHelpers.GetTime();
-			//}
-			//else
-			//{
-			//	Log.Print("Dont cast Overpower: dodged: " + Target.Dodged + "   ovpCD: " + tempOvrpwrCd + "    rage: " + Me.Rage);
-			//}
-			//if (RapidSequence == 300 && !tempHasBattleSt && overpowerReadyTank && Me.Rage >= 5)
-			//{
-			//	RapidSequence = 0;
-			//	Log.Print("Re-init Cast Battle St");
-			//	LastTimeRapidChanged = WowHelpers.GetTime();
-			//}
-			//else if (RapidSequence == 300 && overpowerReadyTank && tempHasBattleSt && Me.Rage >= 5)
-			//{
-			//	RageBefore = Me.Rage;
-			//	RapidSequence = 305;
-			//	CastSpell("Overpower");
-			//	Log.Print("Cast: Overpower");
-			//	LastTimeRapidChanged = WowHelpers.GetTime();
-			//}
-			//else if (RapidSequence == 300 && !overpowerReadyTank && tempHasBattleSt)
-			//{
-			//	RapidSequence = 310;
-			//	CastSpell("Defensive Stance");
-			//	Log.Print("Cast: workaround -> Defensive Stance");
-			//	LastTimeRapidChanged = WowHelpers.GetTime();
-			//}
-			//Log.Print("  mid ovpCD: " + tempOvrpwrCd + "   me.rage:" + Me.Rage + "   ragebefore: " + RageBefore);
-			//if (RapidSequence == 305 && tempHasBattleSt && (tempOvrpwrCd > CdOffset || Me.Rage == RageBefore - 5))
-			//{
-			//	RapidSequence = 310;
-			//	CastSpell("Defensive Stance");
-			//	Log.Print("Cast: Defensive Stance");
-			//	LastTimeRapidChanged = WowHelpers.GetTime();
-			//}
-			//else if (RapidSequence == 305 && tempHasBattleSt && (tempOvrpwrCd < CdOffset || Me.Rage == RageBefore))
-			//{
-			//	RapidSequence = 300;
-			//	Log.Print("Re-init Cast Overpower");
-			//	LastTimeRapidChanged = WowHelpers.GetTime();
-			//}
-			//if (RapidSequence == 310 && !tempHasDefSt)
-			//{
-			//	RapidSequence = 305;
-			//	Log.Print("Re-init Cast Def St");
-			//	LastTimeRapidChanged = WowHelpers.GetTime();
-			//}
-			//else if (RapidSequence == 310 && tempHasDefSt)
-			//{
-			//	RapidSequence = 0;
-			//	LastTimeRapidChanged = WowHelpers.GetTime();
-			//}
-			#endregion
-
-
-			//Log.Print("--------Mid1 Rapid: " + RapidSequence);
-
-			//Log.Print("tempPreferedTar " + tempPreferedTar.Guid);
-
-			//Autotarget for autoattack, if no ovrpwer is available
-			if (tempPreferedTar != null && RapidSequence == 0 && !overpowerReadyTank && SwitchTarget(tempPreferedTar))
-			{
-				StartMeleeAttack();
-			}
 
 			// Demo Shout
 			//Log.Print("Targets with DS: " + (double)Targets12Within5.Count(c => c.DebuffList.Exists(o => o.Name == "Demoralizing Shout")) / (double)Targets12Within5.Count * 100);
@@ -704,79 +549,31 @@ namespace Revlex
 
 
 
-			//// Autotarget for sunder/Revenge/Rend
-			//if (
-			//	(tempPreferedTar2 != null) &&
-			//	(
-			//		((Me.Rage >= 5 && tempRevengeCd < CdOffset || Me.Rage >= 10) && !overpowerReadyTank) 
-			//		/* ||(RapidSequence >= 500 && RapidSequence < 600)*/
-			//	))
-			//{
-			//	if (!tempHasDefSt)
-			//	{
-			//		CastSpell("Defensive Stance");
-			//		Log.Print("Defensive Stance -> sunder/rend/Revenge ");
-			//		LastTimeRapidChanged = WowHelpers.GetTime();
-			//	}
-			//	if (Me.Rage >= 5 && tempRevengeCd < CdOffset)
-			//	{
-			//		if (tempRevengeCd < CdOffset)
-			//		{
-			//			CastSpell("Revenge", true, true);
-			//			Log.Print("Cast: Revenge (sunder/rend/Revenge)");
-			//		}
-			//	}
-			//	if (SwitchTarget(tempPreferedTar2) && !WowHelperObj.UnitHasDebuff(tempPreferedTar2, "Rend") && tempPreferedTar2.tempNextSpell == "Rend" && Me.Rage >= 10)
-			//	{
-			//		CastSpell("Rend");
-			//		Log.Print("Cast: Rend (sunder/rend/Revenge)");
-			//	}
-			//	else if (SwitchTarget(tempPreferedTar2) && !WowHelperObj.UnitHasDebuff(tempPreferedTar2,"Sunder Armor") && tempPreferedTar2.tempNextSpell == "Sunder Armor" && Me.Rage >= 15)
-			//	{
-			//		CastSpell("Sunder Armor");
-			//		Log.Print("Cast: Sunder Armor (sunder/rend/Revenge)");
-			//	}
-			//}
-
-
-			// Autotarget for sunder/Revenge
-			if (
-			(tempPreferedTar.Guid != 0) &&
-			(tempHasDefSt) &&
-			(
-				((Me.Rage >= 5 && tempRevengeCd < CdOffset || Me.Rage >= 15) && !overpowerReadyTank) || 
-				(RapidSequence >= 400 && RapidSequence < 500)
-			))
+			// sunder/Revenge
+			if (tempHasDefSt && (Me.Rage >= 5 && tempRevengeCd < CdOffset || Me.Rage >= 15))
 			{
-				if (!tempHasDefSt)
-				{
-                    CastMacroById(16777224);
-                    //CastSpell("Defensive Stance");
-                    Log.Print("Defensive Stance -> sunder/Revenge ");
-					LastTimeRapidChanged = WowHelpers.GetTime();
+				if (Me.Rage >= 5 && tempRevengeCd < CdOffset)
+                { 
+					CastSpell("Revenge", true, true);
+					Log.Print("Cast: Revenge");
 				}
-				if (((Me.Rage >= 5 && tempRevengeCd < CdOffset) || Me.Rage >= 15) && SwitchTarget(tempPreferedTar))
-				{
-					if (tempRevengeCd < CdOffset)
-					{
-						CastSpell("Revenge", true, true);
-						Log.Print("Cast: Revenge");
-					}
-					if (Me.Rage >= 15)
-					{
-						CastSpell("Sunder Armor");
-						Log.Print("Cast: Sunder Armor");
-					}
-					RapidSequence = 400;
-					LastTimeRapidChanged = WowHelpers.GetTime();
-				}
-				else if (((Me.Rage >= 5 && tempRevengeCd < CdOffset) || Me.Rage >= 15) && !SwitchTarget(tempPreferedTar))
-				{
-					Log.Print("Re-init Cast Sunder/Revenge & search target");
-					RapidSequence = 0;
-					LastTimeRapidChanged = WowHelpers.GetTime();
-				}
-			}
+                else if (Me.Rage >= 15 &&  WowHelperObj.GetStacksOfDebuff(Me.Target,"Sunder Armor") < 5)
+                {
+                    CastSpell("Sunder Armor");
+                    Log.Print("Cast: Sunder Armor");
+                }                
+                else if (WowHelperObj.SpellExist((int)WowHelperObj.GetSpellIdFromSpellName("Mortal Strike")) && WowHelperObj.GetSpellCooldown("Mortal Strike") < CdOffset && Me.Rage >= 30)
+                {
+                    CastSpell("Mortal Strike");
+                    Log.Print("Cast: MS");
+                }
+                else if (Me.Rage >= 15)
+                {
+                    CastSpell("Heroic Strike");
+                    //CastSpellById(11567);
+                    Log.Print("Cast: HS (def)");
+                }
+            }
 
 
 
@@ -801,9 +598,97 @@ namespace Revlex
 		}
 		public override void Combat4()
 		{
+            GeneralActionsTank();
+            StartMeleeAttack();
 
 
-		}
+            float tempTauntCd = WowHelperObj.GetSpellCooldown("Taunt");
+            float tempMoBlowCd = WowHelperObj.GetSpellCooldown("Mocking Blow");
+            bool tempHasZerkSt = WowHelperObj.UnitHasBuff(Me, 2458);
+            bool tempHasDefSt = WowHelperObj.UnitHasBuff(Me, 71);
+            bool tempHasBattleSt = WowHelperObj.UnitHasBuff(Me, 2457);
+            bool moBlowReady = tempMoBlowCd < CdOffset && tempTauntCd > CdOffset && tempTauntCd < 8 && Me.Target.Target.Guid != Me.Guid;
+            bool tauntReady = tempTauntCd < CdOffset && Me.Target.Target.Guid != Me.Guid;
+
+
+            //Taunt
+            if (tauntReady && !tempHasDefSt)
+            {
+                CastMacroById(16777224);
+                //CastSpell("Defensive Stance");
+                Log.Print("Cast: Defensive Stance (for Taunt)");
+            }
+            else if (tauntReady && tempHasDefSt)
+            {
+                CastSpell("Taunt");
+                Log.Print("Cast: Taunt");
+            }
+
+            //Mocking Blow
+            if ((RapidSequence < 700 || RapidSequence > 799) && moBlowReady && !tempHasBattleSt)
+            {
+                RapidSequence = 700;
+                CastMacroById(16777227);
+                //CastSpell("Battle Stance");
+                Log.Print("Cast: Battle Stance");
+                LastTimeRapidChanged = WowHelpers.GetTime();
+            }
+            else if ((RapidSequence < 700 || RapidSequence > 799) && moBlowReady && tempHasBattleSt)
+            {
+                RapidSequence = 700;
+                Log.Print("already in Battle Stance");
+                LastTimeRapidChanged = WowHelpers.GetTime();
+            }
+            if (RapidSequence == 700 && !tempHasBattleSt && moBlowReady)
+            {
+                RapidSequence = 0;
+                Log.Print("Re-init Cast Battle St");
+                LastTimeRapidChanged = WowHelpers.GetTime();
+            }
+            else if (RapidSequence == 700 && moBlowReady && tempHasBattleSt)
+            {
+                RageBefore = Me.Rage;
+                RapidSequence = 705;
+                CastSpell("Mocking Blow");
+                Log.Print("Cast: Mocking Blow");
+                LastTimeRapidChanged = WowHelpers.GetTime();
+            }
+            else if (RapidSequence == 700 && !moBlowReady && tempHasBattleSt)
+            {
+                RapidSequence = 710;
+                CastMacroById(16777224);
+                //CastSpell("Defensive Stance");
+                Log.Print("Cast: workaround -> Defensive Stance");
+                LastTimeRapidChanged = WowHelpers.GetTime();
+            }
+            Log.Print("  mid moCD: " + moBlowReady + "   me.rage:" + Me.Rage + "   ragebefore: " + RageBefore);
+            if (RapidSequence == 705 && !moBlowReady)
+            {
+                RapidSequence = 710;
+                CastMacroById(16777224);
+                //CastSpell("Defensive Stance");
+                Log.Print("Cast: Defensive Stance");
+                LastTimeRapidChanged = WowHelpers.GetTime();
+            }
+            else if (RapidSequence == 705 && moBlowReady)
+            {
+                RapidSequence = 700;
+                Log.Print("Re-init Mocking Blow");
+                LastTimeRapidChanged = WowHelpers.GetTime();
+            }
+            if (RapidSequence == 710 && !tempHasDefSt)
+            {
+                RapidSequence = 705;
+                Log.Print("Re-init Cast Def St");
+                LastTimeRapidChanged = WowHelpers.GetTime();
+            }
+            else if (RapidSequence == 710 && tempHasDefSt)
+            {
+                RapidSequence = 0;
+                LastTimeRapidChanged = WowHelpers.GetTime();
+            }
+
+        }
 	}
 }
 /* 
