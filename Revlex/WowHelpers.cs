@@ -333,7 +333,7 @@ namespace Revlex
 				x.tempTargetPrio = 0;
 				foreach (string z in aura)
 				{
-					if (!UnitHasDebuff(x, z))
+                    if (!x.DebuffList.Exists(o => o.Name == z))
 					{
 						x.tempNextSpell = z;
 						x.tempTargetPrio++;
@@ -356,7 +356,8 @@ namespace Revlex
 			Auras tempEmptyAura = new Auras("", 1, _stacks: 0);
 			//Scans all Targets for "Sunder Armor"-Debuff and assign the stacks to the respective WowObject, if no Auras-Object, it returns stacks a new empty Object of Auras via Null-Coalesce Operator
 			List<WowObject> tempList = CachedUnitlist.Where(o => o.Distance <= radius && o.Health > 0 && o.Type == (short)Constants.ObjType.OT_UNIT && !o.HasBreakableCc).Take(maxNumberToScan).ToList();
-			tempList.ForEach(x => x.tempBuffStacks = (GetUnitDebuffs(x).FirstOrDefault(c => c.Name == aura) ?? tempEmptyAura).Stacks);
+			tempList.ForEach(x => x.tempBuffStacks = (x.DebuffList.FirstOrDefault(o => o.Name == aura) ?? tempEmptyAura).Stacks);
+            //tempList.ForEach(x => x.tempBuffStacks = (GetUnitDebuffs(x).FirstOrDefault(c => c.Name == aura) ?? tempEmptyAura).Stacks);
             // now return the object with the least stack of sunder armor, if no such object is returned, the ??-Operator choose the current target		
             //List<WowObject> tempList2 = tempList;
             //tempList2.OrderBy(c => c.tempBuffStacks);

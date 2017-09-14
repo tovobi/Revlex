@@ -159,20 +159,21 @@ namespace Revlex
 					Log.Print("Cast: Bloodrage Multitarget");
 				}
 
-				//Rend only when target health is more then the half of my maxhealth
-				if (!WowHelperObj.UnitHasDebuff(Target, "Rend") && Me.Rage >= 10 && TargetHealthFactor(60, 1.5f))
+                //Rend only when target health is more then the half of my maxhealth
+                if (!Target.DebuffList.Exists(o => o.Name == "Rend") && Me.Rage >= 10 && TargetHealthFactor(60, 1.5f))
+                //if (!WowHelperObj.UnitHasDebuff(Target, "Rend") && Me.Rage >= 10 && TargetHealthFactor(60, 1.5f))
 				{
 					CastSpell("Rend");
 					Log.Print("!!!!!!!!Cast: Rend");
 				}
 				//Rend with more then 1 Target 
-				if (!WowHelperObj.UnitHasDebuff(Target, "Rend") && Me.Rage >= 10 && TargetHealthFactor(25f, 2, (uint)Targets3Within15.Count(), 1.5f))
+				if (!Target.DebuffList.Exists(o => o.Name == "Rend") && Me.Rage >= 10 && TargetHealthFactor(25f, 2, (uint)Targets3Within15.Count(), 1.5f))
 				{
 					CastSpell("Rend");
 					Log.Print("Cast: Rend Multitarget");
 				}
 				//Demo Shout
-				if (!WowHelperObj.UnitHasDebuff(Target, "Demoralizing Shout") && Me.Rage >= 10 && TargetHealthFactor(40f, 2, (uint)Targets3Within15.Count(), 1.5f))
+				if (!Target.DebuffList.Exists(o => o.Name == "Demoralizing Shout") && Me.Rage >= 10 && TargetHealthFactor(40f, 2, (uint)Targets3Within15.Count(), 1.5f))
 				{
 					CastSpell("Demoralizing Shout");
 					Log.Print("Cast: Demo");
@@ -541,7 +542,7 @@ namespace Revlex
 
 			// Demo Shout
 			//Log.Print("Targets with DS: " + (double)Targets12Within5.Count(c => c.DebuffList.Exists(o => o.Name == "Demoralizing Shout")) / (double)Targets12Within5.Count * 100);
-			if (!WowHelperObj.UnitHasDebuff(Target, "Demoralizing Shout") && !overpowerReadyTank && Me.Rage >= 10 && TargetHealthFactor(40f, 2, (uint)Targets3Within15.Count(), 1.5f) && ((double)Targets12Within5.Count(c => c.DebuffList.Exists(o => o.Name == "Demoralizing Shout")) / (double)Targets12Within5.Count * 100 <= 50))
+			if (!Target.DebuffList.Exists(o => o.Name == "Demoralizing Shout") && !overpowerReadyTank && Me.Rage >= 10 && TargetHealthFactor(40f, 2, (uint)Targets3Within15.Count(), 1.5f) && ((double)Targets12Within5.Count(c => c.DebuffList.Exists(o => o.Name == "Demoralizing Shout")) / (double)Targets12Within5.Count * 100 <= 50))
 			{
 				CastSpell("Demoralizing Shout");
 				Log.Print("Cast: Demo");
@@ -580,6 +581,7 @@ namespace Revlex
                     Log.Print("Cast: HS (def)");
                 }
             }
+            Log.Print("Sunder: " + Target.DebuffList.FirstOrDefault(o => o.Name == "Sunder Armor").TimeApplied + "    " + WowHelpers.GetTime());
 
 
 
