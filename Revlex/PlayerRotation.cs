@@ -35,27 +35,24 @@ namespace Revlex
             {
                 foreach (WowObject tempLast in tempLastList)
                 {
-                    Log.Print("kkk " + tempLast.Name + " " + tempLast.Guid + " " + tempLast.Type + " debuff:" + tempLast.DebuffList.Count);
-                    //if (tempCurr.DebuffList.Exists(o => tempLast.DebuffList.FirstOrDefault(x => x.Id == o.Id && x.Id != 0))
-                    //if (tempCurr.DebuffList.Exists(o => o.Id == tempLast.DebuffList.ForEach(x => x.Id != 0)
-                    bool buffStillActive = false;
-                    foreach (Auras a in tempLast.DebuffList)
+                    if (tempLast.DebuffList != null)
                     {
-                        //tempCurr.DebuffList.(o => o.Id == 0 && o.Id != a.Id && o.Id != 0 && tempCurr.Guid == tempLast.Guid);
-                        Log.Print("lll");
-                        buffStillActive = tempCurr.DebuffList.Exists(o => o.Id == a.Id && a.Id != 0);
-                        Log.Print("mmm" + buffStillActive);
-                        if (buffStillActive)
-                            break;
-                        Auras tempEmptyAura = new Auras("", 1, _stacks: 0);
-                        (tempCurr.DebuffList.FirstOrDefault(o => o.Id != a.Id && o.Id != 0) ?? tempEmptyAura).TimeApplied = WowHelpers.GetTime();
+                        //if (tempCurr.DebuffList.Exists(o => tempLast.DebuffList.FirstOrDefault(x => x.Id == o.Id && x.Id != 0))
+                        //if (tempCurr.DebuffList.Exists(o => o.Id == tempLast.DebuffList.ForEach(x => x.Id != 0)
+                        bool buffStillActive = false;
+                        foreach (Auras a in tempLast.DebuffList)
+                        {
+                            //tempCurr.DebuffList.(o => o.Id == 0 && o.Id != a.Id && o.Id != 0 && tempCurr.Guid == tempLast.Guid);
+                            buffStillActive = tempCurr.DebuffList.Exists(o => o.Id == a.Id && a.Id != 0);
+                            if (buffStillActive)
+                                break;
+                            Auras tempEmptyAura = new Auras("", 1, _stacks: 0);
+                            (tempCurr.DebuffList.FirstOrDefault(o => o.Id != a.Id && o.Id != 0) ?? tempEmptyAura).TimeApplied = WowHelpers.GetTime();
+                        }
                     }
-                    Log.Print("qqq");
 
                 }
-                Log.Print("xxx");
             }
-            Log.Print("vvv");
         }
 
 		public void Init(BindingList<ActionButtonAndSpell> _abasl, Timer _checkHookTimer, globalKeyboardHook _gkh, WowHelpers _wowHelperObj)
