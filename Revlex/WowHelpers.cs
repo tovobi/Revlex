@@ -38,7 +38,8 @@ namespace Revlex
 			//	ConfigButtonsToIngameButtons.Add("MULTIACTIONBAR3BUTTON", "RightActionButton");
 			//}
 		}
-		public List<WowObject> CachedUnitlist = new List<WowObject>();
+        public List<WowObject> LastCachedUnitList = new List<WowObject>();
+        public List<WowObject> CachedUnitlist = new List<WowObject>();
 		public RichTextBox RichDebug = new System.Windows.Forms.RichTextBox();
 		public bool[] HostileFaction = new bool[2500];
 		public string AccountName;
@@ -516,9 +517,10 @@ namespace Revlex
 
 		public void ScanObj()
 		{
-			//Log.Print("[]");
-			//ArrayList list = new ArrayList();
-			CachedUnitlist = new List<WowObject>();
+            //Log.Print("[]");
+            //ArrayList list = new ArrayList();
+            LastCachedUnitList = CachedUnitlist;
+            CachedUnitlist = new List<WowObject>();
 			// set our counter variable to 0 so we can begin counting the objects
 			int TotalWowObjects = 0;
 			WowObject CurrentObject = new WowObject();
@@ -560,7 +562,9 @@ namespace Revlex
 						DecodeUnitFlags(CurrentObject);
 						CurrentObject.Target = new WowObject();
 						CurrentObject.TargetGuid = wowMem.ReadUInt64((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.Target));
-						break;
+
+                        CachedUnitlist.Add(CurrentObject);
+                        break;
 
 					case (short)Constants.ObjType.OT_PLAYER: // a player
 						CurrentObject.CastSpell = wowMem.ReadUInt((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.CastSpell));
@@ -593,7 +597,9 @@ namespace Revlex
 						DecodeUnitFlags(CurrentObject);
 						CurrentObject.Target = new WowObject();
 						CurrentObject.TargetGuid = wowMem.ReadUInt64((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.Target));
-						break;
+
+                        CachedUnitlist.Add(CurrentObject);
+                        break;
 
 					case (short)Constants.ObjType.OT_GAMEOBJ:
 						CurrentObject.XPos = wowMem.ReadFloat((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.GameObjectX));
@@ -605,13 +611,14 @@ namespace Revlex
 						CurrentObject.UnitFieldsAddress = wowMem.ReadUInt((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.DataPTR));
 						CurrentObject.Name = ItemNameFromBaseAddr(CurrentObject.ObjBaseAddress);
 						CurrentObject.GameObjectType = ItemTypeFromBaseAddr(CurrentObject.ObjBaseAddress);
-						break;
+
+                        CachedUnitlist.Add(CurrentObject);
+                        break;
 				}
 
 				// set the current object as the next object in the object manager
 				WowObject tmpObject = CurrentObject;
-				CurrentObject = new WowObject();
-				CachedUnitlist.Add(tmpObject);
+				CurrentObject = new WowObject();				
 				CurrentObject.ObjBaseAddress = wowMem.ReadUInt((tmpObject.ObjBaseAddress + (uint)Pointers.ObjectManager.NextObjectOffset));
 			}
 
@@ -644,12 +651,22 @@ namespace Revlex
 					listObj.PlayerIsFacingTo = GetFacingToUnit(listObj);
 
 				}
-				// scan the auras of unit only i unit is near
-				if (listObj.Distance <= 30 && (listObj.Type == (short)Constants.ObjType.OT_UNIT || listObj.Type == (short)Constants.ObjType.OT_PLAYER))
-				{
-					listObj.Dodged = wowMem.ReadUInt((listObj.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.Dodged));
-					listObj.BuffList = GetUnitBuffs(listObj);
-					listObj.DebuffList = GetUnitDebuffs(listObj);
+                // scan the auras of unit only i unit is near
+                if (listObj.Distance <= 30 && (listObj.Type == (short)Constants.ObjType.OT_UNIT || listObj.Type == (short)Constants.ObjType.OT_PLAYER))
+                {
+                    listObj.Dodged = wowMem.ReadUInt((listObj.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.Dodged));
+                    listObj.BuffList = GetUnitBuffs(listObj);
+                    // give TimeApplied values from last list to the new list of units
+                    if (LastCachedUnitList.Count != 0)
+                    { 
+                        listObj.BuffList.ForEach(x => x.TimeApplied = LastCachedUnitList.FirstOrDefault(o => o.Guid == listObj.Guid).BuffList.FirstOrDefault(z => z.Id == x.Id).TimeApplied);
+                    }
+                    listObj.DebuffList = GetUnitDebuffs(listObj);
+                    // give TimeApplied values from last list to the new list of units
+                    if (LastCachedUnitList.Count != 0)
+                    {
+                        listObj.DebuffList.ForEach(x => x.TimeApplied = LastCachedUnitList.FirstOrDefault(o => o.Guid == listObj.Guid).DebuffList.FirstOrDefault(z => z.Id == x.Id).TimeApplied);
+                    }
 					listObj.HasBreakableCc = listObj.DebuffList.Exists(c => c.Name == "Polymorph" || c.Name == "Sap" || c.Name == "Blind");
 				}
 				else

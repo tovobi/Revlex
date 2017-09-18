@@ -549,7 +549,7 @@ namespace Revlex
 			}
 
 
-
+            Log.Print("Sunder: " + Target.DebuffList.FirstOrDefault(o => o.Name == "Sunder Armor").TimeApplied);
             // sunder/Revenge
             if (RapidSequence == 0 && !tempHasDefSt)
             {
@@ -568,6 +568,7 @@ namespace Revlex
                 {
                     CastSpell("Sunder Armor");
                     Log.Print("Cast: Sunder Armor");
+                    
                 }                
                 else if (WowHelperObj.SpellExist((int)WowHelperObj.GetSpellIdFromSpellName("Mortal Strike")) && WowHelperObj.GetSpellCooldown("Mortal Strike") < CdOffset && Me.Rage >= 30)
                 {
