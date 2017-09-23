@@ -538,7 +538,7 @@ namespace Revlex
 				Log.Print("Cast: Overpower");
 			}
 
-            Log.Print("111");
+            //Log.Print("111");
 
 			// Demo Shout
 			//Log.Print("Targets with DS: " + (double)Targets12Within5.Count(c => c.DebuffList.Exists(o => o.Name == "Demoralizing Shout")) / (double)Targets12Within5.Count * 100);
@@ -547,7 +547,7 @@ namespace Revlex
 				CastSpell("Demoralizing Shout");
 				Log.Print("Cast: Demo");
 			}
-            Log.Print("112" + Target.DebuffList.ToString() +" " + Target.DebuffList.Count);
+            //Log.Print("112" + Target.DebuffList.ToString() +" " + Target.DebuffList.Count);
             Auras tempEmptyAura = new Auras("", 1, _stacks: 0);
             if (Target.DebuffList != null && Target.DebuffList.Count > 0)
             {
@@ -555,14 +555,14 @@ namespace Revlex
                 Log.Print("Sunder: " + (Target.DebuffList.FirstOrDefault(o => o.Name == "Sunder Armor") ?? tempEmptyAura).TimeApplied);
             }
             // sunder/Revenge
-            Log.Print("113");
+            //Log.Print("113");
             if (RapidSequence == 0 && !tempHasDefSt)
             {
                 CastMacroById(16777224);
                 //CastSpell("Defensive Stance");
                 Log.Print("Cast: Defensive Stance (sunder)");
             }
-            Log.Print("114");
+            //Log.Print("114");
             if (tempHasDefSt && (Me.Rage >= 5 && tempRevengeCd < CdOffset || Me.Rage >= 15))
 			{
 				if (Me.Rage >= 5 && tempRevengeCd < CdOffset)
@@ -588,7 +588,12 @@ namespace Revlex
                     Log.Print("Cast: HS (def)");
                 }
             }
-            Log.Print("Sunder: " + Target.DebuffList.FirstOrDefault(o => o.Name == "Sunder Armor").TimeApplied + "    " + WowHelpers.GetTime());
+            if (Target.DebuffList != null && Target.DebuffList.Count > 0)
+            {
+                long tempTime = (Target.DebuffList.FirstOrDefault(o => o.Name == "Sunder Armor") ?? tempEmptyAura).TimeApplied;
+                Log.Print("Sunder2: " + tempTime + "    " + WowHelpers.GetTime() + "   dur: " +( (WowHelpers.GetTime() - tempTime)/1000));
+            }
+
 
 
 

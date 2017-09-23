@@ -24,36 +24,36 @@ namespace Revlex
 		{
 		}
 
-        private void CheckForNewAuras(double dist = 30)
-        {
-            Log.Print("www");
-            List<WowObject> tempCurrList = WowHelperObj.CachedUnitlist.Where(o => o.Distance <= dist && (o.Type == (short)Constants.ObjType.OT_PLAYER || o.Type == (short)Constants.ObjType.OT_UNIT)).ToList();
-            Log.Print("ddd " + tempCurrList.Count);
-            List<WowObject> tempLastList = WowHelperObj.LastCachedUnitList.Where(o => o.Distance <= dist && (o.Type == (short)Constants.ObjType.OT_PLAYER || o.Type == (short)Constants.ObjType.OT_UNIT)).ToList();
-            Log.Print("eee " + tempLastList.Count);
-            foreach (WowObject tempCurr in tempCurrList)
-            {
-                foreach (WowObject tempLast in tempLastList)
-                {
-                    if (tempLast.DebuffList != null)
-                    {
-                        //if (tempCurr.DebuffList.Exists(o => tempLast.DebuffList.FirstOrDefault(x => x.Id == o.Id && x.Id != 0))
-                        //if (tempCurr.DebuffList.Exists(o => o.Id == tempLast.DebuffList.ForEach(x => x.Id != 0)
-                        bool buffStillActive = false;
-                        foreach (Auras a in tempLast.DebuffList)
-                        {
-                            //tempCurr.DebuffList.(o => o.Id == 0 && o.Id != a.Id && o.Id != 0 && tempCurr.Guid == tempLast.Guid);
-                            buffStillActive = tempCurr.DebuffList.Exists(o => o.Id == a.Id && a.Id != 0);
-                            if (buffStillActive)
-                                break;
-                            Auras tempEmptyAura = new Auras("", 1, _stacks: 0);
-                            (tempCurr.DebuffList.FirstOrDefault(o => o.Id != a.Id && o.Id != 0) ?? tempEmptyAura).TimeApplied = WowHelpers.GetTime();
-                        }
-                    }
+        //private void CheckForNewAuras(double dist = 30)
+        //{
+        //    //Log.Print("www");
+        //    List<WowObject> tempCurrList = WowHelperObj.CachedUnitlist.Where(o => o.Distance <= dist && (o.Type == (short)Constants.ObjType.OT_PLAYER || o.Type == (short)Constants.ObjType.OT_UNIT)).ToList();
+        //   // Log.Print("ddd " + tempCurrList.Count);
+        //    List<WowObject> tempLastList = WowHelperObj.LastCachedUnitList.Where(o => o.Distance <= dist && (o.Type == (short)Constants.ObjType.OT_PLAYER || o.Type == (short)Constants.ObjType.OT_UNIT)).ToList();
+        //    Log.Print("eee " + tempLastList.Count);
+        //    foreach (WowObject tempCurr in tempCurrList)
+        //    {
+        //        foreach (WowObject tempLast in tempLastList)
+        //        {
+        //            if (tempLast.DebuffList != null)
+        //            {
+        //                //if (tempCurr.DebuffList.Exists(o => tempLast.DebuffList.FirstOrDefault(x => x.Id == o.Id && x.Id != 0))
+        //                //if (tempCurr.DebuffList.Exists(o => o.Id == tempLast.DebuffList.ForEach(x => x.Id != 0)
+        //                bool buffStillActive = false;
+        //                foreach (Auras a in tempLast.DebuffList)
+        //                {
+        //                    //tempCurr.DebuffList.(o => o.Id == 0 && o.Id != a.Id && o.Id != 0 && tempCurr.Guid == tempLast.Guid);
+        //                    buffStillActive = tempCurr.DebuffList.Exists(o => o.Id == a.Id && a.Id != 0);
+        //                    if (buffStillActive)
+        //                        break;
+        //                    Auras tempEmptyAura = new Auras("", 1, _stacks: 0);
+        //                    (tempCurr.DebuffList.FirstOrDefault(o => o.Id != a.Id && o.Id != 0) ?? tempEmptyAura).TimeApplied = WowHelpers.GetTime();
+        //                }
+        //            }
 
-                }
-            }
-        }
+        //        }
+        //    }
+        //}
 
 		public void Init(BindingList<ActionButtonAndSpell> _abasl, Timer _checkHookTimer, globalKeyboardHook _gkh, WowHelpers _wowHelperObj)
 		{
@@ -154,7 +154,7 @@ namespace Revlex
 		public bool CastSpell(uint spellId, bool enableAutoAttack = true, bool surpressBlockKeys = false)
 		{
 			CheckForHostileFaction();
-            CheckForNewAuras();
+            //CheckForNewAuras();
             //Log.Print(KeysBlocked() + ": " + spellId + " \t");
             Stance = WowHelperObj.GetStance();
 			if (LastSendKey < (WowHelpers.GetTime() - BlockSendKeyTime) && WowHelperObj.CheckConnection())
@@ -188,9 +188,7 @@ namespace Revlex
 		public bool CastSpell(string spellName, bool enableAutoAttack = true, bool surpressBlockKeys = false)
 		{
 			CheckForHostileFaction();
-            Log.Print("---");
-            CheckForNewAuras();
-            Log.Print("....");
+            //CheckForNewAuras();
             //Log.Print(KeysBlocked() + ": " + spellId + " \t");
             Stance = WowHelperObj.GetStance();
 			if (LastSendKey < (WowHelpers.GetTime() - BlockSendKeyTime) && WowHelperObj.CheckConnection())
@@ -225,7 +223,7 @@ namespace Revlex
 		}
 		public bool CastMacroById(uint macroId, bool enableAutoAttack = true, bool surpressBlockKeys = false)
 		{
-            CheckForNewAuras();
+            //CheckForNewAuras();
             //Log.Print(KeysBlocked() + ": " + macroId + " \t");
             Stance = WowHelperObj.GetStance();
 			if (LastSendKey < (WowHelpers.GetTime() - BlockSendKeyTime) && WowHelperObj.CheckConnection())

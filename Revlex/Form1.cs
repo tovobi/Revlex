@@ -1154,7 +1154,7 @@ namespace Revlex
 
 		void gkh_KeyDown(object sender, KeyEventArgs e)
 		{
-			
+            Log.Print("gettime: " + WowHelpers.GetTime());
 			//Log.Print("Down\t" + e.KeyCode.ToString() + " " + ApplicationIsActivated() + "\t mod: "+ Control.ModifierKeys.ToString());
 			KeybindCombo tmpCombo = cbxKeybindingConfigData.Where(c => c.Realkey.ToString() == e.KeyCode.ToString()).FirstOrDefault();
 			//e.Handled = true; // we turned this off, so it diddnt block the keypress from wow

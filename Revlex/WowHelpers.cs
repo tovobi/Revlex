@@ -519,7 +519,7 @@ namespace Revlex
 		{
             //Log.Print("[]");
             //ArrayList list = new ArrayList();
-            LastCachedUnitList = CachedUnitlist;
+            //LastCachedUnitList = CachedUnitlist;
             CachedUnitlist = new List<WowObject>();
 			// set our counter variable to 0 so we can begin counting the objects
 			int TotalWowObjects = 0;
@@ -656,17 +656,53 @@ namespace Revlex
                 {
                     listObj.Dodged = wowMem.ReadUInt((listObj.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.Dodged));
                     listObj.BuffList = GetUnitBuffs(listObj);
-                    // give TimeApplied values from last list to the new list of units
-                    if (LastCachedUnitList.Count != 0)
-                    { 
-                        listObj.BuffList.ForEach(x => x.TimeApplied = LastCachedUnitList.FirstOrDefault(o => o.Guid == listObj.Guid).BuffList.FirstOrDefault(z => z.Id == x.Id).TimeApplied);
-                    }
+                    //// give TimeApplied values from last list to the new list of units
+                    //if (LastCachedUnitList.Count != 0)
+                    //{
+                    //    Log.Print("   ");
+                    //    if (listObj.BuffList != null && listObj.BuffList.Count > 0)
+                    //    {
+                    //        listObj.BuffList.ForEach(x => Log.Print("..... " + x.Name));
+                    //        listObj.BuffList.ForEach(x => x.TimeApplied = LastCachedUnitList.FirstOrDefault(o => o.Guid == listObj.Guid).BuffList.FirstOrDefault(z => z.Id == x.Id).TimeApplied);
+                    //    }
+                    //}
                     listObj.DebuffList = GetUnitDebuffs(listObj);
                     // give TimeApplied values from last list to the new list of units
-                    if (LastCachedUnitList.Count != 0)
-                    {
-                        listObj.DebuffList.ForEach(x => x.TimeApplied = LastCachedUnitList.FirstOrDefault(o => o.Guid == listObj.Guid).DebuffList.FirstOrDefault(z => z.Id == x.Id).TimeApplied);
-                    }
+                    //if (LastCachedUnitList.Count != 0)
+                    //{
+                    //    Log.Print("   ");
+                    //    if (listObj.DebuffList != null && listObj.DebuffList.Count > 0)
+                    //    {
+                    //        //listObj.DebuffList.ForEach(x => Log.Print(",,,,, " + x.Name));
+                    //        //foreach(WowObject o in LastCachedUnitList)
+                    //        //{
+                    //        //    if (o.Guid == listObj.Guid)
+                    //        //    {
+                    //        //        Log.Print(",," + o.Guid);
+                    //        //        foreach (Auras x in o.DebuffList)
+                    //        //        {
+                    //        //            foreach (Auras y in listObj.DebuffList)
+                    //        //            {
+                    //        //                if (x.Id == y.Id)
+                    //        //                {
+                    //        //                    listObj.DebuffList.FirstOrDefault(b => b.Id == x.Id).TimeApplied = x.TimeApplied;
+                    //        //                    Log.Print("found buff, take old duration");
+                    //        //                }
+                    //        //            }
+                    //        //        }
+                    //        //    }
+                    //        //}
+                    //        //Log.Print(",,"+ LastCachedUnitList.FirstOrDefault(o => o.Guid == listObj.Guid).Name);
+                    //        //Log.Print(",,," + LastCachedUnitList.FirstOrDefault(o => o.Guid == listObj.Guid).DebuffList.FirstOrDefault().TimeApplied);
+                    //        Auras tempEmptyAura = new Auras("", 1, _stacks: 0);
+                    //        Log.Print("__");
+                    //        listObj.DebuffList.ForEach(x => x.TimeApplied = (LastCachedUnitList.FirstOrDefault(o => o != null && o.Guid == listObj.Guid).DebuffList.FirstOrDefault(z => z != null && z.Id == x.Id) ?? tempEmptyAura).TimeApplied);
+                    //        Log.Print("___");
+                    //    }
+                        
+                        
+                    //}
+                    //Log.Print("__1");
 					listObj.HasBreakableCc = listObj.DebuffList.Exists(c => c.Name == "Polymorph" || c.Name == "Sap" || c.Name == "Blind");
 				}
 				else
