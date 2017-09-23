@@ -630,82 +630,84 @@ namespace Revlex
             bool moBlowReady = tempMoBlowCd < CdOffset && tempTauntCd > CdOffset && tempTauntCd < 8 && Me.Target.Target.Guid != Me.Guid;
             bool tauntReady = tempTauntCd < CdOffset && Me.Target.Target.Guid != Me.Guid;
 
+            if (Me.IsInCombat)
+            {
+                //Taunt
+                if (tauntReady && !tempHasDefSt)
+                {
+                    CastMacroById(16777224);
+                    //CastSpell("Defensive Stance");
+                    Log.Print("Cast: Defensive Stance (for Taunt)");
+                }
+                else if (tauntReady && tempHasDefSt)
+                {
+                    CastSpell("Taunt");
+                    Log.Print("Cast: Taunt");
+                }
 
-            //Taunt
-            if (tauntReady && !tempHasDefSt)
-            {
-                CastMacroById(16777224);
-                //CastSpell("Defensive Stance");
-                Log.Print("Cast: Defensive Stance (for Taunt)");
-            }
-            else if (tauntReady && tempHasDefSt)
-            {
-                CastSpell("Taunt");
-                Log.Print("Cast: Taunt");
-            }
-
-            //Mocking Blow
-            if ((RapidSequence < 700 || RapidSequence > 799) && moBlowReady && !tempHasBattleSt)
-            {
-                RapidSequence = 700;
-                CastMacroById(16777227);
-                //CastSpell("Battle Stance");
-                Log.Print("Cast: Battle Stance");
-                LastTimeRapidChanged = WowHelpers.GetTime();
-            }
-            else if ((RapidSequence < 700 || RapidSequence > 799) && moBlowReady && tempHasBattleSt)
-            {
-                RapidSequence = 700;
-                Log.Print("already in Battle Stance");
-                LastTimeRapidChanged = WowHelpers.GetTime();
-            }
-            if (RapidSequence == 700 && !tempHasBattleSt && moBlowReady)
-            {
-                RapidSequence = 0;
-                Log.Print("Re-init Cast Battle St");
-                LastTimeRapidChanged = WowHelpers.GetTime();
-            }
-            else if (RapidSequence == 700 && moBlowReady && tempHasBattleSt)
-            {
-                RageBefore = Me.Rage;
-                RapidSequence = 705;
-                CastSpell("Mocking Blow");
-                Log.Print("Cast: Mocking Blow");
-                LastTimeRapidChanged = WowHelpers.GetTime();
-            }
-            else if (RapidSequence == 700 && !moBlowReady && tempHasBattleSt)
-            {
-                RapidSequence = 710;
-                CastMacroById(16777224);
-                //CastSpell("Defensive Stance");
-                Log.Print("Cast: workaround -> Defensive Stance");
-                LastTimeRapidChanged = WowHelpers.GetTime();
-            }
-            Log.Print("  mid moCD: " + moBlowReady + "   me.rage:" + Me.Rage + "   ragebefore: " + RageBefore);
-            if (RapidSequence == 705 && !moBlowReady)
-            {
-                RapidSequence = 710;
-                CastMacroById(16777224);
-                //CastSpell("Defensive Stance");
-                Log.Print("Cast: Defensive Stance");
-                LastTimeRapidChanged = WowHelpers.GetTime();
-            }
-            else if (RapidSequence == 705 && moBlowReady)
-            {
-                RapidSequence = 700;
-                Log.Print("Re-init Mocking Blow");
-                LastTimeRapidChanged = WowHelpers.GetTime();
-            }
-            if (RapidSequence == 710 && !tempHasDefSt)
-            {
-                RapidSequence = 705;
-                Log.Print("Re-init Cast Def St");
-                LastTimeRapidChanged = WowHelpers.GetTime();
-            }
-            else if (RapidSequence == 710 && tempHasDefSt)
-            {
-                RapidSequence = 0;
-                LastTimeRapidChanged = WowHelpers.GetTime();
+                //Mocking Blow
+                if ((RapidSequence < 700 || RapidSequence > 799) && moBlowReady && !tempHasBattleSt)
+                {
+                    RapidSequence = 700;
+                    CastMacroById(16777227);
+                    //CastSpell("Battle Stance");
+                    Log.Print("Cast: Battle Stance");
+                    LastTimeRapidChanged = WowHelpers.GetTime();
+                }
+                else if ((RapidSequence < 700 || RapidSequence > 799) && moBlowReady && tempHasBattleSt)
+                {
+                    RapidSequence = 700;
+                    Log.Print("already in Battle Stance");
+                    LastTimeRapidChanged = WowHelpers.GetTime();
+                }
+                if (RapidSequence == 700 && !tempHasBattleSt && moBlowReady)
+                {
+                    RapidSequence = 0;
+                    Log.Print("Re-init Cast Battle St");
+                    LastTimeRapidChanged = WowHelpers.GetTime();
+                }
+                else if (RapidSequence == 700 && moBlowReady && tempHasBattleSt)
+                {
+                    RageBefore = Me.Rage;
+                    RapidSequence = 705;
+                    CastSpell("Mocking Blow");
+                    Log.Print("Cast: Mocking Blow");
+                    LastTimeRapidChanged = WowHelpers.GetTime();
+                }
+                else if (RapidSequence == 700 && !moBlowReady && tempHasBattleSt)
+                {
+                    RapidSequence = 710;
+                    CastMacroById(16777224);
+                    //CastSpell("Defensive Stance");
+                    Log.Print("Cast: workaround -> Defensive Stance");
+                    LastTimeRapidChanged = WowHelpers.GetTime();
+                }
+                Log.Print("  mid moCD: " + moBlowReady + "   me.rage:" + Me.Rage + "   ragebefore: " + RageBefore);
+                if (RapidSequence == 705 && !moBlowReady)
+                {
+                    RapidSequence = 710;
+                    CastMacroById(16777224);
+                    //CastSpell("Defensive Stance");
+                    Log.Print("Cast: Defensive Stance");
+                    LastTimeRapidChanged = WowHelpers.GetTime();
+                }
+                else if (RapidSequence == 705 && moBlowReady)
+                {
+                    RapidSequence = 700;
+                    Log.Print("Re-init Mocking Blow");
+                    LastTimeRapidChanged = WowHelpers.GetTime();
+                }
+                if (RapidSequence == 710 && !tempHasDefSt)
+                {
+                    RapidSequence = 705;
+                    Log.Print("Re-init Cast Def St");
+                    LastTimeRapidChanged = WowHelpers.GetTime();
+                }
+                else if (RapidSequence == 710 && tempHasDefSt)
+                {
+                    RapidSequence = 0;
+                    LastTimeRapidChanged = WowHelpers.GetTime();
+                }
             }
 
         }
