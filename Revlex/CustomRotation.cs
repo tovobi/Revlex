@@ -632,18 +632,18 @@ namespace Revlex
 
             if (Me.IsInCombat)
             {
-                //Taunt
-                if (tauntReady && !tempHasDefSt)
-                {
-                    CastMacroById(16777224);
-                    //CastSpell("Defensive Stance");
-                    Log.Print("Cast: Defensive Stance (for Taunt)");
-                }
-                else if (tauntReady && tempHasDefSt)
-                {
-                    CastSpell("Taunt");
-                    Log.Print("Cast: Taunt");
-                }
+                ////Taunt
+                //if (tauntReady && !tempHasDefSt)
+                //{
+                //    CastMacroById(16777224);
+                //    //CastSpell("Defensive Stance");
+                //    Log.Print("Cast: Defensive Stance (for Taunt)");
+                //}
+                //else if (tauntReady && tempHasDefSt)
+                //{
+                //    CastSpell("Taunt");
+                //    Log.Print("Cast: Taunt");
+                //}
 
                 //Mocking Blow
                 if ((RapidSequence < 700 || RapidSequence > 799) && moBlowReady && !tempHasBattleSt)
