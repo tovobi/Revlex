@@ -166,6 +166,7 @@ namespace Revlex
 		{
 			string factionString = "";
 			int u = 0;
+            flist[0] = true;
 			foreach (bool f in flist)
 			{
 				if (f)
@@ -180,7 +181,8 @@ namespace Revlex
 		{
 			string factionString = "";
 			int u = 0;
-			foreach (bool f in flist)
+            flist[0] = true;
+            foreach (bool f in flist)
 			{
 				if (f)
 				{

@@ -67,5 +67,20 @@ namespace Revlex
 		public uint GameObjectType = 0;
 		public WowObject next = null;
 		public uint Test = 0;
-	}
+
+        public WowVector3d GetRadarPosition(uint radarSizeX, uint radarSizeY, double maxRange, double xFromVec3d, double yFromVec3d)
+        {
+            double x;
+            double y;
+            double distanceX = (XPos - xFromVec3d) * -1; // the coords in wow seems to be invers, so * -1
+            double distanceY = (YPos - yFromVec3d) * -1; // the coords in wow seems to be invers, so * -1
+            x = ((radarSizeX / (maxRange * 2)) * distanceX) + (radarSizeX / 2);
+            y = ((radarSizeY / (maxRange * 2)) * distanceY) + (radarSizeY / 2);
+            return new WowVector3d(x, y);
+        }
+        public WowVector3d GetRotatingRadarPosition(uint radarWidth, uint radarHeight, float maxRange, WowVector3d localPlayerPos)
+        {
+            return new WowVector3d(1, 1);
+        }
+    }
 }

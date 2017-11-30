@@ -42,6 +42,21 @@
             this.grpBoxBindings = new System.Windows.Forms.GroupBox();
             this.lblModifier = new System.Windows.Forms.Label();
             this.lblKey = new System.Windows.Forms.Label();
+            this.tabPageRadar = new System.Windows.Forms.TabPage();
+            this.pnlRadarCfg = new System.Windows.Forms.Panel();
+            this.btnRadarAccept = new System.Windows.Forms.Button();
+            this.pnlRadarCfgValue = new System.Windows.Forms.Panel();
+            this.cbxEnableBorder = new System.Windows.Forms.CheckBox();
+            this.txtRadarSizeX = new System.Windows.Forms.TextBox();
+            this.txtRadarYPos = new System.Windows.Forms.TextBox();
+            this.txtRadarXPos = new System.Windows.Forms.TextBox();
+            this.cbxEnableRadar = new System.Windows.Forms.CheckBox();
+            this.pnlRadarCfgKey = new System.Windows.Forms.Panel();
+            this.lblRadarBorder = new System.Windows.Forms.Label();
+            this.lblRadarSize = new System.Windows.Forms.Label();
+            this.lblRadarYPos = new System.Windows.Forms.Label();
+            this.lblRadarXPos = new System.Windows.Forms.Label();
+            this.lblEnableRadar = new System.Windows.Forms.Label();
             this.lblSelectWowClassFile = new System.Windows.Forms.Label();
             this.cbxSelectWowClassfile = new System.Windows.Forms.ComboBox();
             this.richDebug = new System.Windows.Forms.RichTextBox();
@@ -57,17 +72,22 @@
             this.lblWowFolder = new System.Windows.Forms.Label();
             this.btnSearchWowFolder = new System.Windows.Forms.Button();
             this.timerCheckHook = new System.Windows.Forms.Timer(this.components);
+            this.txtRadarSizeY = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.tabPageObjects.SuspendLayout();
             this.tabPageRotation.SuspendLayout();
             this.grpBoxBindings.SuspendLayout();
+            this.tabPageRadar.SuspendLayout();
+            this.pnlRadarCfg.SuspendLayout();
+            this.pnlRadarCfgValue.SuspendLayout();
+            this.pnlRadarCfgKey.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmdRefreshUi
             // 
             this.cmdRefreshUi.Location = new System.Drawing.Point(118, 11);
             this.cmdRefreshUi.Name = "cmdRefreshUi";
-            this.cmdRefreshUi.Size = new System.Drawing.Size(100, 23);
+            this.cmdRefreshUi.Size = new System.Drawing.Size(74, 23);
             this.cmdRefreshUi.TabIndex = 9;
             this.cmdRefreshUi.Text = "Refresh UI";
             this.cmdRefreshUi.UseVisualStyleBackColor = true;
@@ -109,6 +129,7 @@
             this.tabControl1.Controls.Add(this.tabPageObjects);
             this.tabControl1.Controls.Add(this.tabPageCombat);
             this.tabControl1.Controls.Add(this.tabPageRotation);
+            this.tabControl1.Controls.Add(this.tabPageRadar);
             this.tabControl1.Location = new System.Drawing.Point(10, 95);
             this.tabControl1.Margin = new System.Windows.Forms.Padding(2);
             this.tabControl1.Name = "tabControl1";
@@ -180,6 +201,151 @@
             this.lblKey.Size = new System.Drawing.Size(25, 13);
             this.lblKey.TabIndex = 0;
             this.lblKey.Text = "Key";
+            // 
+            // tabPageRadar
+            // 
+            this.tabPageRadar.Controls.Add(this.pnlRadarCfg);
+            this.tabPageRadar.Location = new System.Drawing.Point(4, 22);
+            this.tabPageRadar.Name = "tabPageRadar";
+            this.tabPageRadar.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageRadar.Size = new System.Drawing.Size(771, 405);
+            this.tabPageRadar.TabIndex = 3;
+            this.tabPageRadar.Text = "Radar";
+            this.tabPageRadar.UseVisualStyleBackColor = true;
+            // 
+            // pnlRadarCfg
+            // 
+            this.pnlRadarCfg.Controls.Add(this.btnRadarAccept);
+            this.pnlRadarCfg.Controls.Add(this.pnlRadarCfgValue);
+            this.pnlRadarCfg.Controls.Add(this.pnlRadarCfgKey);
+            this.pnlRadarCfg.Location = new System.Drawing.Point(6, 7);
+            this.pnlRadarCfg.Name = "pnlRadarCfg";
+            this.pnlRadarCfg.Size = new System.Drawing.Size(322, 279);
+            this.pnlRadarCfg.TabIndex = 2;
+            // 
+            // btnRadarAccept
+            // 
+            this.btnRadarAccept.Location = new System.Drawing.Point(4, 205);
+            this.btnRadarAccept.Name = "btnRadarAccept";
+            this.btnRadarAccept.Size = new System.Drawing.Size(75, 23);
+            this.btnRadarAccept.TabIndex = 3;
+            this.btnRadarAccept.Text = "Accept";
+            this.btnRadarAccept.UseVisualStyleBackColor = true;
+            this.btnRadarAccept.Click += new System.EventHandler(this.btnRadarAccept_Click);
+            // 
+            // pnlRadarCfgValue
+            // 
+            this.pnlRadarCfgValue.Controls.Add(this.txtRadarSizeY);
+            this.pnlRadarCfgValue.Controls.Add(this.cbxEnableBorder);
+            this.pnlRadarCfgValue.Controls.Add(this.txtRadarSizeX);
+            this.pnlRadarCfgValue.Controls.Add(this.txtRadarYPos);
+            this.pnlRadarCfgValue.Controls.Add(this.txtRadarXPos);
+            this.pnlRadarCfgValue.Controls.Add(this.cbxEnableRadar);
+            this.pnlRadarCfgValue.Location = new System.Drawing.Point(91, 0);
+            this.pnlRadarCfgValue.Name = "pnlRadarCfgValue";
+            this.pnlRadarCfgValue.Size = new System.Drawing.Size(126, 189);
+            this.pnlRadarCfgValue.TabIndex = 2;
+            // 
+            // cbxEnableBorder
+            // 
+            this.cbxEnableBorder.AutoSize = true;
+            this.cbxEnableBorder.Location = new System.Drawing.Point(4, 112);
+            this.cbxEnableBorder.Name = "cbxEnableBorder";
+            this.cbxEnableBorder.Size = new System.Drawing.Size(15, 14);
+            this.cbxEnableBorder.TabIndex = 4;
+            this.cbxEnableBorder.UseVisualStyleBackColor = true;
+            this.cbxEnableBorder.CheckedChanged += new System.EventHandler(this.cbxEnableBorder_CheckedChanged);
+            // 
+            // txtRadarSizeX
+            // 
+            this.txtRadarSizeX.Location = new System.Drawing.Point(4, 84);
+            this.txtRadarSizeX.Name = "txtRadarSizeX";
+            this.txtRadarSizeX.Size = new System.Drawing.Size(46, 20);
+            this.txtRadarSizeX.TabIndex = 3;
+            this.txtRadarSizeX.Text = "167";
+            // 
+            // txtRadarYPos
+            // 
+            this.txtRadarYPos.Location = new System.Drawing.Point(4, 57);
+            this.txtRadarYPos.Name = "txtRadarYPos";
+            this.txtRadarYPos.Size = new System.Drawing.Size(100, 20);
+            this.txtRadarYPos.TabIndex = 2;
+            this.txtRadarYPos.Text = "0";
+            // 
+            // txtRadarXPos
+            // 
+            this.txtRadarXPos.Location = new System.Drawing.Point(4, 30);
+            this.txtRadarXPos.Name = "txtRadarXPos";
+            this.txtRadarXPos.Size = new System.Drawing.Size(100, 20);
+            this.txtRadarXPos.TabIndex = 1;
+            this.txtRadarXPos.Text = "1737";
+            // 
+            // cbxEnableRadar
+            // 
+            this.cbxEnableRadar.AutoSize = true;
+            this.cbxEnableRadar.Location = new System.Drawing.Point(4, 7);
+            this.cbxEnableRadar.Name = "cbxEnableRadar";
+            this.cbxEnableRadar.Size = new System.Drawing.Size(15, 14);
+            this.cbxEnableRadar.TabIndex = 0;
+            this.cbxEnableRadar.UseVisualStyleBackColor = true;
+            this.cbxEnableRadar.CheckedChanged += new System.EventHandler(this.cbxEnableRadar_CheckedChanged);
+            // 
+            // pnlRadarCfgKey
+            // 
+            this.pnlRadarCfgKey.Controls.Add(this.lblRadarBorder);
+            this.pnlRadarCfgKey.Controls.Add(this.lblRadarSize);
+            this.pnlRadarCfgKey.Controls.Add(this.lblRadarYPos);
+            this.pnlRadarCfgKey.Controls.Add(this.lblRadarXPos);
+            this.pnlRadarCfgKey.Controls.Add(this.lblEnableRadar);
+            this.pnlRadarCfgKey.Location = new System.Drawing.Point(0, 0);
+            this.pnlRadarCfgKey.Name = "pnlRadarCfgKey";
+            this.pnlRadarCfgKey.Size = new System.Drawing.Size(90, 190);
+            this.pnlRadarCfgKey.TabIndex = 1;
+            // 
+            // lblRadarBorder
+            // 
+            this.lblRadarBorder.AutoSize = true;
+            this.lblRadarBorder.Location = new System.Drawing.Point(0, 112);
+            this.lblRadarBorder.Name = "lblRadarBorder";
+            this.lblRadarBorder.Size = new System.Drawing.Size(74, 13);
+            this.lblRadarBorder.TabIndex = 4;
+            this.lblRadarBorder.Text = "Enable Border";
+            // 
+            // lblRadarSize
+            // 
+            this.lblRadarSize.AutoSize = true;
+            this.lblRadarSize.Location = new System.Drawing.Point(0, 88);
+            this.lblRadarSize.Name = "lblRadarSize";
+            this.lblRadarSize.Size = new System.Drawing.Size(28, 13);
+            this.lblRadarSize.TabIndex = 3;
+            this.lblRadarSize.Text = "size:";
+            // 
+            // lblRadarYPos
+            // 
+            this.lblRadarYPos.AutoSize = true;
+            this.lblRadarYPos.Location = new System.Drawing.Point(1, 61);
+            this.lblRadarYPos.Name = "lblRadarYPos";
+            this.lblRadarYPos.Size = new System.Drawing.Size(54, 13);
+            this.lblRadarYPos.TabIndex = 2;
+            this.lblRadarYPos.Text = "y position:";
+            // 
+            // lblRadarXPos
+            // 
+            this.lblRadarXPos.AutoSize = true;
+            this.lblRadarXPos.Location = new System.Drawing.Point(1, 34);
+            this.lblRadarXPos.Name = "lblRadarXPos";
+            this.lblRadarXPos.Size = new System.Drawing.Size(54, 13);
+            this.lblRadarXPos.TabIndex = 1;
+            this.lblRadarXPos.Text = "x position:";
+            // 
+            // lblEnableRadar
+            // 
+            this.lblEnableRadar.AutoSize = true;
+            this.lblEnableRadar.Location = new System.Drawing.Point(0, 7);
+            this.lblEnableRadar.Name = "lblEnableRadar";
+            this.lblEnableRadar.Size = new System.Drawing.Size(75, 13);
+            this.lblEnableRadar.TabIndex = 0;
+            this.lblEnableRadar.Text = "Enable Radar:";
             // 
             // lblSelectWowClassFile
             // 
@@ -278,9 +444,9 @@
             // 
             // cmdInternalUpdate
             // 
-            this.cmdInternalUpdate.Location = new System.Drawing.Point(226, 11);
+            this.cmdInternalUpdate.Location = new System.Drawing.Point(199, 11);
             this.cmdInternalUpdate.Name = "cmdInternalUpdate";
-            this.cmdInternalUpdate.Size = new System.Drawing.Size(100, 23);
+            this.cmdInternalUpdate.Size = new System.Drawing.Size(60, 23);
             this.cmdInternalUpdate.TabIndex = 23;
             this.cmdInternalUpdate.Text = "Start";
             this.cmdInternalUpdate.UseVisualStyleBackColor = true;
@@ -339,6 +505,14 @@
             // 
             this.timerCheckHook.Tick += new System.EventHandler(this.timerCheckHook_Tick);
             // 
+            // txtRadarSizeY
+            // 
+            this.txtRadarSizeY.Location = new System.Drawing.Point(57, 84);
+            this.txtRadarSizeY.Name = "txtRadarSizeY";
+            this.txtRadarSizeY.Size = new System.Drawing.Size(46, 20);
+            this.txtRadarSizeY.TabIndex = 5;
+            this.txtRadarSizeY.Text = "165";
+            // 
             // Form1
             // 
             this.AllowDrop = true;
@@ -372,6 +546,12 @@
             this.tabPageRotation.ResumeLayout(false);
             this.grpBoxBindings.ResumeLayout(false);
             this.grpBoxBindings.PerformLayout();
+            this.tabPageRadar.ResumeLayout(false);
+            this.pnlRadarCfg.ResumeLayout(false);
+            this.pnlRadarCfgValue.ResumeLayout(false);
+            this.pnlRadarCfgValue.PerformLayout();
+            this.pnlRadarCfgKey.ResumeLayout(false);
+            this.pnlRadarCfgKey.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -405,6 +585,22 @@
 		private System.Windows.Forms.Label lblWowFolder;
 		private System.Windows.Forms.Button btnSearchWowFolder;
 		private System.Windows.Forms.Timer timerCheckHook;
-	}
+        private System.Windows.Forms.TabPage tabPageRadar;
+        private System.Windows.Forms.Panel pnlRadarCfg;
+        private System.Windows.Forms.Panel pnlRadarCfgValue;
+        private System.Windows.Forms.TextBox txtRadarSizeX;
+        private System.Windows.Forms.TextBox txtRadarYPos;
+        private System.Windows.Forms.TextBox txtRadarXPos;
+        private System.Windows.Forms.CheckBox cbxEnableRadar;
+        private System.Windows.Forms.Panel pnlRadarCfgKey;
+        private System.Windows.Forms.Label lblRadarSize;
+        private System.Windows.Forms.Label lblRadarYPos;
+        private System.Windows.Forms.Label lblRadarXPos;
+        private System.Windows.Forms.Label lblEnableRadar;
+        private System.Windows.Forms.Button btnRadarAccept;
+        private System.Windows.Forms.CheckBox cbxEnableBorder;
+        private System.Windows.Forms.Label lblRadarBorder;
+        private System.Windows.Forms.TextBox txtRadarSizeY;
+    }
 }
 

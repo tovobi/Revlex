@@ -59,8 +59,10 @@ namespace Revlex
 		public BlackMagic wowMem { get; set; }  = new BlackMagic();
 		public BindingList<ActionButtonAndSpell> ActionButtonAndSpellList = new BindingList<ActionButtonAndSpell>();
 		public List<Spells> SpellsInSpellBook = new List<Spells>();
+        private long BlockScanObj = 140;
+        private long LastScanObj = 0;
 
-		public bool Init(bool firstInit = true)
+        public bool Init(bool firstInit = true)
 		{
 			if (!GetWowProcess())
 			{
@@ -203,31 +205,81 @@ namespace Revlex
 
 		public ulong GetCurrentTargetGuid()
 		{
-			return wowMem.ReadUInt64((uint)wowMem.MainModule.BaseAddress + (uint)Pointers.StaticAddresses.CurrentTargetGUID);
+            UInt64 tmp;
+            try
+            {
+                tmp = wowMem.ReadUInt64((uint)wowMem.MainModule.BaseAddress + (uint)Pointers.StaticAddresses.CurrentTargetGUID);
+                return tmp;
+            }
+            catch (Exception e)
+            {
+                Log.Print("GetCurrentTargetGuid\r\n" + e.Message, 4);
+                return 0;
+            }            
 		}
 
 		private string ReadASCIIString(uint addr)
 		{
-			return wowMem.ReadASCIIString(addr, 50);
-		}
+			String tmp = "";
+            try
+            {
+                tmp = wowMem.ReadASCIIString(addr, 50);
+                return tmp;
+            }
+            catch (Exception e)
+            {
+                Log.Print("ReadASCIIString\r\n" + e.Message, 4);
+                return "";
+            }
+        }
 
 		public string ItemNameFromBaseAddr(uint BaseAddr)
 		{
-			uint ObjectBase = BaseAddr;
-			return ReadASCIIString((wowMem.ReadUInt((wowMem.ReadUInt((ObjectBase + (uint)Pointers.UnitName.ObjectName1)) + (uint)Pointers.UnitName.ObjectName2))));
+            uint ObjectBase = BaseAddr;
+            String tmp = "";
+            try
+            {
+                tmp = ReadASCIIString((wowMem.ReadUInt((wowMem.ReadUInt((ObjectBase + (uint)Pointers.UnitName.ObjectName1)) + (uint)Pointers.UnitName.ObjectName2))));
+                return tmp;
+            }
+            catch (Exception e)
+            {
+                Log.Print("ItemNameFromBaseAddr\r\n" + e.Message, 4);
+                return "unnamed";
+            }
 		}
 
 		public uint ItemTypeFromBaseAddr(uint BaseAddr)
 		{
-			uint ObjectBase = BaseAddr;
-			return wowMem.ReadUInt((ObjectBase + (uint)Pointers.UnitName.ItemType));
-		}
+            uint ObjectBase = BaseAddr;
+            uint tmp;
+            try
+            {
+                tmp = wowMem.ReadUInt((ObjectBase + (uint)Pointers.UnitName.ItemType));
+                return tmp;
+            }
+            catch (Exception e)
+            {
+                Log.Print("ItemTypeFromBaseAddr\r\n" + e.Message, 4);
+                return 0;
+            }
+        }
 
 		public string MobNameFromBaseAddr(uint BaseAddr)
 		{
 			uint ObjectBase = BaseAddr;
-			return ReadASCIIString((wowMem.ReadUInt((wowMem.ReadUInt((ObjectBase + (uint)Pointers.UnitName.UnitName1)) + (uint)Pointers.UnitName.UnitName2))));
-		}
+            string tmp = "";
+            try
+            {
+                tmp = ReadASCIIString((wowMem.ReadUInt((wowMem.ReadUInt((ObjectBase + (uint)Pointers.UnitName.UnitName1)) + (uint)Pointers.UnitName.UnitName2))));
+                return tmp;
+            }
+            catch (Exception e)
+            {
+                Log.Print("MobNameFromBaseAddr\r\n" + e.Message, 4);
+                return "unnamed";
+            }
+        }
 
 		/*
 		private string PlayerNameFromGuid2(ulong guid)
@@ -256,37 +308,63 @@ namespace Revlex
 		*/
 		public string PlayerNameFromGuid(ulong guid)
 		{
-			ulong nameStorePtr = (uint)wowMem.MainModule.BaseAddress + (uint)Pointers.UnitName.PlayerNameCachePointer; // Player name database
-			ulong base_, testGUID;
+            string tmp = "";
+            try
+            {
+                ulong nameStorePtr = (uint)wowMem.MainModule.BaseAddress + (uint)Pointers.UnitName.PlayerNameCachePointer; // Player name database
+                ulong base_, testGUID;
+			    base_ = wowMem.ReadUInt((uint)nameStorePtr);
+			    testGUID = wowMem.ReadUInt64(((uint)base_ + (uint)Pointers.UnitName.PlayerNameGUIDOffset));
+			    while (testGUID != guid)
+			    {
+				    //read next
+				    base_ = wowMem.ReadUInt(((uint)base_));
+				    testGUID = wowMem.ReadUInt64(((uint)base_ + (uint)Pointers.UnitName.PlayerNameGUIDOffset));
+			    }
 
-			base_ = wowMem.ReadUInt((uint)nameStorePtr);
-			testGUID = wowMem.ReadUInt64(((uint)base_ + (uint)Pointers.UnitName.PlayerNameGUIDOffset));
-			//if (testGUID == 0) // 1.8.2017 tvb
-			//{
-			//	return "";
-			//}
-			while (testGUID != guid)
-			{
-				//read next
-				base_ = wowMem.ReadUInt(((uint)base_));
-				testGUID = wowMem.ReadUInt64(((uint)base_ + (uint)Pointers.UnitName.PlayerNameGUIDOffset));
-			}
+                // Hopefully found the guid in the name list...
+                // I don't know how to check for not found
+                tmp = ReadASCIIString((uint)base_ + (uint)Pointers.UnitName.PlayerNameStringOffset);
+                return tmp;
 
-			// Hopefully found the guid in the name list...
-			// I don't know how to check for not found
-			return ReadASCIIString((uint)base_ + (uint)Pointers.UnitName.PlayerNameStringOffset);
-		}
+            }
+            catch (Exception e)
+            {
+                Log.Print("PlayerNameFromGuid\r\n" + e.Message, 4);
+                return "unnamed";
+            }
+        }
 
 
 		public string MobNameFromGuid(ulong Guid)
 		{
 			uint objectBase = GetObjectBaseByGuid(Guid);
-			return ReadASCIIString((wowMem.ReadUInt((wowMem.ReadUInt((objectBase + (uint)Pointers.UnitName.UnitName1)) + (uint)Pointers.UnitName.UnitName2))));
-		}
+            String tmp = "";
+            try
+            {
+                tmp = ReadASCIIString((wowMem.ReadUInt((wowMem.ReadUInt((objectBase + (uint)Pointers.UnitName.UnitName1)) + (uint)Pointers.UnitName.UnitName2))));
+                return tmp;
+            }
+            catch (Exception e)
+            {
+                Log.Print("MobNameFromGuid\r\n" + e.Message, 4);
+                return "unnamed";
+            }
+        }
 		public string MobNameFromGuid(ulong Guid, uint objectBase)
 		{
-			return ReadASCIIString((wowMem.ReadUInt((wowMem.ReadUInt((objectBase + (uint)Pointers.UnitName.UnitName1)) + (uint)Pointers.UnitName.UnitName2))));
-		}
+            String tmp = "";
+            try
+            {
+                tmp = ReadASCIIString((wowMem.ReadUInt((wowMem.ReadUInt((objectBase + (uint)Pointers.UnitName.UnitName1)) + (uint)Pointers.UnitName.UnitName2))));
+                return tmp;
+            }
+            catch (Exception e)
+            {
+                Log.Print("MobNameFromGuid\r\n" + e.Message, 4);
+                return "unnamed";
+            }
+        }
 		public uint GetObjectBaseByGuid(ulong Guid)
 		{
 			WowObject TempObject = new WowObject();
@@ -457,14 +535,89 @@ namespace Revlex
 			//{
 			//	Log.Print(x.Name+", ",0,0);
 			//}
-			Log.Br();
+			//Log.Br();
 			return tempList;
 		}
 
+        public List<WowObject> GetMiningNodes(double radius = 200, int maxNumberToScan = 30)
+        {
+            List<WowObject> tempList = CachedUnitlist.Where(c => c.Type == (short)Constants.ObjType.OT_GAMEOBJ && c.Name.Contains("Vein") && c.Distance <= radius).Take(maxNumberToScan).ToList();
+            //foreach (WowObject x in tempList)
+            //{
+            //	Log.Print(x.Name+", ",0,0);
+            //}
+            //Log.Br();
+            return tempList;
+        }
+        public List<WowObject> GetHerbNodes(double radius = 200, int maxNumberToScan = 30)
+        {
+            List<WowObject> tempList = CachedUnitlist.Where(
+                c => c.Type == (short)Constants.ObjType.OT_GAMEOBJ &&
+                    (
+                    c.Name == "Peacebloom" ||
+                    c.Name == "Silverleaf" ||
+                    c.Name == "Earthroot" ||
+                    c.Name == "Mageroyal" ||
+                    c.Name == "Briarthorn" ||
+                    c.Name == "Stranglekelp" ||
+                    c.Name == "Bruiseweed" ||
+                    c.Name == "Wild Steelbloom" ||
+                    c.Name == "Grave Moss" ||
+                    c.Name == "Kingsblood" ||
+                    c.Name == "Liferoot" ||
+                    c.Name == "Fadeleaf" ||
+                    c.Name == "Goldthorn" ||
+                    c.Name.Contains("Khadgar") ||
+                    c.Name.Contains("Tears") ||
+                    c.Name == "Wintersbite" ||
+                    c.Name == "Firebloom" ||
+                    c.Name == "Purple Lotus" ||
+                    c.Name == "Sungrass" ||
+                    c.Name == "Blindweed" ||
+                    c.Name == "Ghost Mushroom" ||
+                    c.Name == "Gromsblood" ||
+                    c.Name == "Golden Sansam" ||
+                    c.Name == "Dreamfoil" ||
+                    c.Name == "Mountain Silversage" ||
+                    c.Name == "Plaguebloom" ||
+                    c.Name == "Icecap" ||
+                    c.Name == "Black Lotus"
+                    ) &&
+                c.Distance <= radius
+                ).Take(maxNumberToScan).ToList();
+            //foreach (WowObject x in tempList)
+            //{
+            //	Log.Print(x.Name+", ",0,0);
+            //}
+            //Log.Br();
+            return tempList;
+        }
 
-		private ulong GetObjectGuidByBase(uint Base)
+        public List<WowObject> GetNearPlayerEnemies(double radius = 500, int maxNumberToScan = 200)
+        {
+            //Log.Print("GetNearEnemies("+radius+", "+maxNumberToScan+"): ",0,0);
+            List<WowObject> tempList = CachedUnitlist.Where(c => c.IsHostile  && c.Distance <= radius && c.Type == (short)Constants.ObjType.OT_PLAYER).Take(maxNumberToScan).ToList();
+            //foreach (WowObject x in tempList)
+            //{
+            //    Console.WriteLine(x.Name+"\r\n");
+            //}
+            return tempList;
+        }
+
+
+        private ulong GetObjectGuidByBase(uint Base)
 		{
-			return wowMem.ReadUInt64((Base + (uint)(uint)Pointers.WowObject.Guid));
+            UInt64 tmp;
+            try
+            {
+                tmp = wowMem.ReadUInt64((Base + (uint)(uint)Pointers.WowObject.Guid));
+                return tmp;
+            }
+            catch (Exception e)
+            {
+                Log.Print("GetObjectGuidByBase\r\n" + e.Message, 4);
+                return 0;
+            }
 		}
 		public bool IsHostile(WowObject unit)
 		{
@@ -517,228 +670,261 @@ namespace Revlex
 
 		public void ScanObj()
 		{
-            //Log.Print("[]");
-            //ArrayList list = new ArrayList();
-            //LastCachedUnitList = CachedUnitlist;
-            CachedUnitlist = new List<WowObject>();
-			// set our counter variable to 0 so we can begin counting the objects
-			int TotalWowObjects = 0;
-			WowObject CurrentObject = new WowObject();
-			// set our current object as the first in the object manager
-			CurrentObject.ObjBaseAddress = FirstObject;
-			while ((CurrentObject.ObjBaseAddress & 1) == 0)
-			{
-				TotalWowObjects++;
-				// type independent informations
-				CurrentObject.Guid = wowMem.ReadUInt64((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.Guid));
-				//Log.Print("List: " + CurrentObject.Guid);
-				CurrentObject.Type = (short)(wowMem.ReadUInt((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.Type)));
-				switch (CurrentObject.Type)
-				{
-					case (short)Constants.ObjType.OT_UNIT: // an npc
-						CurrentObject.CastSpell = wowMem.ReadUInt((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.CastSpell));
-						CurrentObject.UnitFieldsAddress = wowMem.ReadUInt((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.DataPTR));
-						CurrentObject.ChannelSpell = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.ChannelSpell));
-						CurrentObject.Health = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.Health));
-						CurrentObject.MaxHealth = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.MaxHealth));
-						CurrentObject.HealthPercent = (uint)Math.Floor(((double)CurrentObject.Health / (double)CurrentObject.MaxHealth * 100));
-						CurrentObject.SummonedBy = wowMem.ReadUInt64((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.SummonedBy));
-						CurrentObject.FactionTemplate = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.FactionTemplate));
-						CurrentObject.FactionOffset = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.FactionOffset));
-						//CurrentObject.Dodged = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.Dodged));
-						CurrentObject.Level = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.Level));
-						CurrentObject.XPos = wowMem.ReadFloat((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.X));
-						CurrentObject.YPos = wowMem.ReadFloat((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.Y));
-						CurrentObject.ZPos = wowMem.ReadFloat((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.Z));
-						Pointers.PlayerClass.TryGetValue(wowMem.ReadByte((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.PlayerClass)), out CurrentObject.Class);
-						CurrentObject.Rotation = wowMem.ReadFloat((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.Facing));
-						//CurrentObject.PlayerIsFacingTo = GetFacingToUnit(CurrentObject);
-						CurrentObject.vector3d = new WowVector3d(CurrentObject.XPos, CurrentObject.YPos, CurrentObject.ZPos);
-						//CurrentObject.Distance = Math.Round((LocalPlayer.vector3d.Distance(CurrentObject.vector3d)), 2);
-						CurrentObject.UnitFlags = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.Flags));
-						CurrentObject.DynamicFlags = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.DynamicFlags));
-						CurrentObject.IsHostile = HostileFaction[CurrentObject.FactionTemplate];
-						CurrentObject.Name = MobNameFromBaseAddr(CurrentObject.ObjBaseAddress);
-						DecodeUnitFlags(CurrentObject);
-						CurrentObject.Target = new WowObject();
-						CurrentObject.TargetGuid = wowMem.ReadUInt64((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.Target));
-
-                        CachedUnitlist.Add(CurrentObject);
-                        break;
-
-					case (short)Constants.ObjType.OT_PLAYER: // a player
-						CurrentObject.CastSpell = wowMem.ReadUInt((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.CastSpell));
-						CurrentObject.GuidOfAutoAttackTarget = wowMem.ReadUInt64((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.GuidOfAutoAttackTarget));
-						CurrentObject.UnitFieldsAddress = wowMem.ReadUInt((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.DataPTR));
-						CurrentObject.ChannelSpell = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.ChannelSpell));
-						CurrentObject.Health = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.Health));
-						CurrentObject.MaxHealth = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.MaxHealth));
-						CurrentObject.HealthPercent = (uint)Math.Floor(((double)CurrentObject.Health / (double)CurrentObject.MaxHealth * 100));
-						CurrentObject.Mana = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.Mana));
-						CurrentObject.MaxMana = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.MaxMana));
-						CurrentObject.Rage = (uint)Math.Floor((double)wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.Rage)) / 10);
-						CurrentObject.Energy = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.Energy));
-						CurrentObject.FactionTemplate = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.FactionTemplate));
-						CurrentObject.FactionOffset = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.FactionOffset));
-						CurrentObject.Level = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.Level));
-						//CurrentObject.Dodged = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.Dodged));
-						CurrentObject.XPos = wowMem.ReadFloat((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.X));
-						CurrentObject.YPos = wowMem.ReadFloat((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.Y));
-						CurrentObject.ZPos = wowMem.ReadFloat((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.Z));
-						Pointers.PlayerClass.TryGetValue(wowMem.ReadByte((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.PlayerClass)), out CurrentObject.Class);
-						CurrentObject.Rotation = wowMem.ReadFloat((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.Facing));
-						//CurrentObject.PlayerIsFacingTo = GetFacingToUnit(CurrentObject);
-						CurrentObject.vector3d = new WowVector3d(CurrentObject.XPos, CurrentObject.YPos, CurrentObject.ZPos);
-						//CurrentObject.Distance = Math.Round((LocalPlayer.vector3d.Distance(CurrentObject.vector3d)), 2);
-						CurrentObject.UnitFlags = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.Flags));
-						CurrentObject.DynamicFlags = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.DynamicFlags));
-						CurrentObject.IsHostile = IsHostile(CurrentObject);
-						CurrentObject.Name = PlayerNameFromGuid(CurrentObject.Guid);
-						DecodeUnitFlags(CurrentObject);
-						CurrentObject.Target = new WowObject();
-						CurrentObject.TargetGuid = wowMem.ReadUInt64((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.Target));
-
-                        CachedUnitlist.Add(CurrentObject);
-                        break;
-
-					case (short)Constants.ObjType.OT_GAMEOBJ:
-						CurrentObject.XPos = wowMem.ReadFloat((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.GameObjectX));
-						CurrentObject.YPos = wowMem.ReadFloat((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.GameObjectY));
-						CurrentObject.ZPos = wowMem.ReadFloat((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.GameObjectZ));
-						//CurrentObject.PlayerIsFacingTo = GetFacingToUnit(CurrentObject);
-						CurrentObject.vector3d = new WowVector3d(CurrentObject.XPos, CurrentObject.YPos, CurrentObject.ZPos);
-						//CurrentObject.Distance = Math.Round((LocalPlayer.vector3d.Distance(CurrentObject.vector3d)), 2);
-						CurrentObject.UnitFieldsAddress = wowMem.ReadUInt((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.DataPTR));
-						CurrentObject.Name = ItemNameFromBaseAddr(CurrentObject.ObjBaseAddress);
-						CurrentObject.GameObjectType = ItemTypeFromBaseAddr(CurrentObject.ObjBaseAddress);
-
-                        CachedUnitlist.Add(CurrentObject);
-                        break;
-				}
-
-				// set the current object as the next object in the object manager
-				WowObject tmpObject = CurrentObject;
-				CurrentObject = new WowObject();				
-				CurrentObject.ObjBaseAddress = wowMem.ReadUInt((tmpObject.ObjBaseAddress + (uint)Pointers.ObjectManager.NextObjectOffset));
-			}
-
-			foreach (WowObject listObj in CachedUnitlist)
-			{
-				if (listObj.Type == (short)Constants.ObjType.OT_PLAYER || listObj.Type == (short)Constants.ObjType.OT_UNIT)
-				{
-
-					//if the currentobj-guid is already in cache as a targetguid, then the corresponding obj will get his target(CurrentObject)
-					List<WowObject> IsTargetOfList = CachedUnitlist.Where(c => (c.Type == (short)Constants.ObjType.OT_PLAYER || c.Type == (short)Constants.ObjType.OT_UNIT) && c.TargetGuid == listObj.Guid).ToList();
-					if (IsTargetOfList.Count > 0)
-					{
-						IsTargetOfList.ForEach(c => c.Target = listObj);
-					}
-					if (listObj.Guid == LocalPlayer.Guid)
-					{
-						LocalPlayer = listObj; // Copy whole listObj to LocalPlayer
-					}
-				}
-				if (listObj.Type == (short)Constants.ObjType.OT_PLAYER || listObj.Type == (short)Constants.ObjType.OT_UNIT || listObj.Type == (short)Constants.ObjType.OT_GAMEOBJ)
-				{
-					if (listObj.vector3d != null && LocalPlayer.vector3d != null)
-					{
-						listObj.Distance = Math.Round((LocalPlayer.vector3d.Distance(listObj.vector3d)), 2);
-					}
-					else
-					{
-						listObj.Distance = 999;
-					}
-					listObj.PlayerIsFacingTo = GetFacingToUnit(listObj);
-
-				}
-                // scan the auras of unit only i unit is near
-                if (listObj.Distance <= 30 && (listObj.Type == (short)Constants.ObjType.OT_UNIT || listObj.Type == (short)Constants.ObjType.OT_PLAYER))
+            if (LastScanObj < (WowHelpers.GetTime() - BlockScanObj))
+            {
+                //Log.Print("[]");
+                //ArrayList list = new ArrayList();
+                //LastCachedUnitList = CachedUnitlist;
+                CachedUnitlist = new List<WowObject>();
+                // set our counter variable to 0 so we can begin counting the objects
+                int TotalWowObjects = 0;
+                WowObject CurrentObject = new WowObject();
+                // set our current object as the first in the object manager
+                CurrentObject.ObjBaseAddress = FirstObject;
+                while ((CurrentObject.ObjBaseAddress & 1) == 0)
                 {
-                    listObj.Dodged = wowMem.ReadUInt((listObj.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.Dodged));
-                    listObj.BuffList = GetUnitBuffs(listObj);
-                    //// give TimeApplied values from last list to the new list of units
-                    //if (LastCachedUnitList.Count != 0)
-                    //{
-                    //    Log.Print("   ");
-                    //    if (listObj.BuffList != null && listObj.BuffList.Count > 0)
-                    //    {
-                    //        listObj.BuffList.ForEach(x => Log.Print("..... " + x.Name));
-                    //        listObj.BuffList.ForEach(x => x.TimeApplied = LastCachedUnitList.FirstOrDefault(o => o.Guid == listObj.Guid).BuffList.FirstOrDefault(z => z.Id == x.Id).TimeApplied);
-                    //    }
-                    //}
-                    listObj.DebuffList = GetUnitDebuffs(listObj);
-                    // give TimeApplied values from last list to the new list of units
-                    //if (LastCachedUnitList.Count != 0)
-                    //{
-                    //    Log.Print("   ");
-                    //    if (listObj.DebuffList != null && listObj.DebuffList.Count > 0)
-                    //    {
-                    //        //listObj.DebuffList.ForEach(x => Log.Print(",,,,, " + x.Name));
-                    //        //foreach(WowObject o in LastCachedUnitList)
-                    //        //{
-                    //        //    if (o.Guid == listObj.Guid)
-                    //        //    {
-                    //        //        Log.Print(",," + o.Guid);
-                    //        //        foreach (Auras x in o.DebuffList)
-                    //        //        {
-                    //        //            foreach (Auras y in listObj.DebuffList)
-                    //        //            {
-                    //        //                if (x.Id == y.Id)
-                    //        //                {
-                    //        //                    listObj.DebuffList.FirstOrDefault(b => b.Id == x.Id).TimeApplied = x.TimeApplied;
-                    //        //                    Log.Print("found buff, take old duration");
-                    //        //                }
-                    //        //            }
-                    //        //        }
-                    //        //    }
-                    //        //}
-                    //        //Log.Print(",,"+ LastCachedUnitList.FirstOrDefault(o => o.Guid == listObj.Guid).Name);
-                    //        //Log.Print(",,," + LastCachedUnitList.FirstOrDefault(o => o.Guid == listObj.Guid).DebuffList.FirstOrDefault().TimeApplied);
-                    //        Auras tempEmptyAura = new Auras("", 1, _stacks: 0);
-                    //        Log.Print("__");
-                    //        listObj.DebuffList.ForEach(x => x.TimeApplied = (LastCachedUnitList.FirstOrDefault(o => o != null && o.Guid == listObj.Guid).DebuffList.FirstOrDefault(z => z != null && z.Id == x.Id) ?? tempEmptyAura).TimeApplied);
-                    //        Log.Print("___");
-                    //    }
-                        
-                        
-                    //}
-                    //Log.Print("__1");
-					listObj.HasBreakableCc = listObj.DebuffList.Exists(c => c.Name == "Polymorph" || c.Name == "Sap" || c.Name == "Blind");
-				}
-				else
-				{
-					listObj.Dodged = 0;
-					listObj.BuffList = null;
-					listObj.DebuffList = null;
-					listObj.HasBreakableCc = false;
-				}
-			}
-			//// add again data to localplayer
-			//LocalPlayer = CachedUnitlist.FirstOrDefault(c => c.Guid == LocalPlayer.Guid);
-			//foreach (WowObject listObj in CachedUnitlist)
-			//{
-			//	if (listObj.Type == (short)Constants.ObjType.OT_PLAYER || listObj.Type == (short)Constants.ObjType.OT_UNIT)
-			//	{
-			//		if (listObj.Type == (short)Constants.ObjType.OT_PLAYER)
-			//		{
-			//			Log.Print("Human: ", 0, 0);
-			//		}
-			//		else if (listObj.Type == (short)Constants.ObjType.OT_UNIT)
-			//		{
-			//			Log.Print("Npc:   ", 0, 0);
-			//		}
-			//		Log.Print(z(listObj.Name, 20) + " \t" + z(listObj.Guid.ToString(), 24) + " \t" + z(listObj.Target.Name, 20) + " \t" + listObj.Distance, 0, 0);
-			//		if (listObj.Guid == LocalPlayer.Guid)
-			//		{
-			//			LocalPlayer = listObj; // Copy whole listObj to LocalPlayer
-			//			Log.Print("\t <-- me   ", 0, 0);
-			//		}
-			//		Log.Br();
-			//	}
+                    TotalWowObjects++;
+                    // type independent informations
+                    try
+                    {
+                        CurrentObject.Guid = wowMem.ReadUInt64((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.Guid));
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.ToString());
+                        break;
+                    }
+                    try
+                    {
+                        //Log.Print("List: " + CurrentObject.Guid);
+                        CurrentObject.Type = (short)(wowMem.ReadUInt((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.Type)));
+                        switch (CurrentObject.Type)
+                        {
+                            case (short)Constants.ObjType.OT_UNIT: // an npc
+                                CurrentObject.CastSpell = wowMem.ReadUInt((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.CastSpell));
+                                CurrentObject.UnitFieldsAddress = wowMem.ReadUInt((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.DataPTR));
+                                CurrentObject.ChannelSpell = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.ChannelSpell));
+                                CurrentObject.Health = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.Health));
+                                CurrentObject.MaxHealth = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.MaxHealth));
+                                CurrentObject.HealthPercent = (uint)Math.Floor(((double)CurrentObject.Health / (double)CurrentObject.MaxHealth * 100));
+                                CurrentObject.SummonedBy = wowMem.ReadUInt64((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.SummonedBy));
+                                CurrentObject.FactionTemplate = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.FactionTemplate));
+                                CurrentObject.FactionOffset = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.FactionOffset));
+                                //CurrentObject.Dodged = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.Dodged));
+                                CurrentObject.Level = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.Level));
+                                CurrentObject.XPos = wowMem.ReadFloat((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.X));
+                                CurrentObject.YPos = wowMem.ReadFloat((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.Y));
+                                CurrentObject.ZPos = wowMem.ReadFloat((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.Z));
+                                Pointers.PlayerClass.TryGetValue(wowMem.ReadByte((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.PlayerClass)), out CurrentObject.Class);
+                                CurrentObject.Rotation = wowMem.ReadFloat((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.Facing));
+                                //CurrentObject.PlayerIsFacingTo = GetFacingToUnit(CurrentObject);
+                                CurrentObject.vector3d = new WowVector3d(CurrentObject.XPos, CurrentObject.YPos, CurrentObject.ZPos);
+                                //CurrentObject.Distance = Math.Round((LocalPlayer.vector3d.Distance(CurrentObject.vector3d)), 2);
+                                CurrentObject.UnitFlags = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.Flags));
+                                CurrentObject.DynamicFlags = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.DynamicFlags));
+                                CurrentObject.IsHostile = HostileFaction[CurrentObject.FactionTemplate];
+                                CurrentObject.Name = MobNameFromBaseAddr(CurrentObject.ObjBaseAddress);
+                                DecodeUnitFlags(CurrentObject);
+                                CurrentObject.Target = new WowObject();
+                                CurrentObject.TargetGuid = wowMem.ReadUInt64((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.Target));
+
+                                CachedUnitlist.Add(CurrentObject);
+                                break;
+
+                            case (short)Constants.ObjType.OT_PLAYER: // a player
+                                CurrentObject.CastSpell = wowMem.ReadUInt((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.CastSpell));
+                                CurrentObject.GuidOfAutoAttackTarget = wowMem.ReadUInt64((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.GuidOfAutoAttackTarget));
+                                CurrentObject.UnitFieldsAddress = wowMem.ReadUInt((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.DataPTR));
+                                CurrentObject.ChannelSpell = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.ChannelSpell));
+                                CurrentObject.Health = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.Health));
+                                CurrentObject.MaxHealth = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.MaxHealth));
+                                CurrentObject.HealthPercent = (uint)Math.Floor(((double)CurrentObject.Health / (double)CurrentObject.MaxHealth * 100));
+                                CurrentObject.Mana = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.Mana));
+                                CurrentObject.MaxMana = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.MaxMana));
+                                CurrentObject.Rage = (uint)Math.Floor((double)wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.Rage)) / 10);
+                                CurrentObject.Energy = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.Energy));
+                                CurrentObject.FactionTemplate = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.FactionTemplate));
+                                CurrentObject.FactionOffset = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.FactionOffset));
+                                CurrentObject.Level = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.Level));
+                                //CurrentObject.Dodged = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.Dodged));
+                                CurrentObject.XPos = wowMem.ReadFloat((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.X));
+                                CurrentObject.YPos = wowMem.ReadFloat((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.Y));
+                                CurrentObject.ZPos = wowMem.ReadFloat((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.Z));
+                                Pointers.PlayerClass.TryGetValue(wowMem.ReadByte((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.PlayerClass)), out CurrentObject.Class);
+                                CurrentObject.Rotation = wowMem.ReadFloat((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.Facing));
+                                //CurrentObject.PlayerIsFacingTo = GetFacingToUnit(CurrentObject);
+                                CurrentObject.vector3d = new WowVector3d(CurrentObject.XPos, CurrentObject.YPos, CurrentObject.ZPos);
+                                //CurrentObject.Distance = Math.Round((LocalPlayer.vector3d.Distance(CurrentObject.vector3d)), 2);
+                                CurrentObject.UnitFlags = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.Flags));
+                                CurrentObject.DynamicFlags = wowMem.ReadUInt((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.DynamicFlags));
+                                CurrentObject.IsHostile = IsHostile(CurrentObject);
+                                CurrentObject.Name = PlayerNameFromGuid(CurrentObject.Guid);
+                                DecodeUnitFlags(CurrentObject);
+                                CurrentObject.Target = new WowObject();
+                                CurrentObject.TargetGuid = wowMem.ReadUInt64((CurrentObject.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.Target));
+
+                                CachedUnitlist.Add(CurrentObject);
+                                break;
+
+                            case (short)Constants.ObjType.OT_GAMEOBJ:
+                                CurrentObject.XPos = wowMem.ReadFloat((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.GameObjectX));
+                                CurrentObject.YPos = wowMem.ReadFloat((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.GameObjectY));
+                                CurrentObject.ZPos = wowMem.ReadFloat((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.GameObjectZ));
+                                //CurrentObject.PlayerIsFacingTo = GetFacingToUnit(CurrentObject);
+                                CurrentObject.vector3d = new WowVector3d(CurrentObject.XPos, CurrentObject.YPos, CurrentObject.ZPos);
+                                //CurrentObject.Distance = Math.Round((LocalPlayer.vector3d.Distance(CurrentObject.vector3d)), 2);
+                                CurrentObject.UnitFieldsAddress = wowMem.ReadUInt((CurrentObject.ObjBaseAddress + (uint)Pointers.WowObject.DataPTR));
+                                CurrentObject.Name = ItemNameFromBaseAddr(CurrentObject.ObjBaseAddress);
+                                CurrentObject.GameObjectType = ItemTypeFromBaseAddr(CurrentObject.ObjBaseAddress);
+
+                                CachedUnitlist.Add(CurrentObject);
+                                break;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Print("ScanObj() -> switch/case\r\n" + e.Message, 4);
+                    }
+
+                    // set the current object as the next object in the object manager
+                    WowObject tmpObject = CurrentObject;
+                    CurrentObject = new WowObject();
+                    try
+                    {
+                        CurrentObject.ObjBaseAddress = wowMem.ReadUInt((tmpObject.ObjBaseAddress + (uint)Pointers.ObjectManager.NextObjectOffset));
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Print("ScanObj() -> NextObjectOffset\r\n" + e.Message, 4);
+                    }
+                }
+
+                foreach (WowObject listObj in CachedUnitlist)
+                {
+                    if (listObj.Type == (short)Constants.ObjType.OT_PLAYER || listObj.Type == (short)Constants.ObjType.OT_UNIT)
+                    {
+
+                        //if the currentobj-guid is already in cache as a targetguid, then the corresponding obj will get his target(CurrentObject)
+                        List<WowObject> IsTargetOfList = CachedUnitlist.Where(c => (c.Type == (short)Constants.ObjType.OT_PLAYER || c.Type == (short)Constants.ObjType.OT_UNIT) && c.TargetGuid == listObj.Guid).ToList();
+                        if (IsTargetOfList.Count > 0)
+                        {
+                            IsTargetOfList.ForEach(c => c.Target = listObj);
+                        }
+                        if (listObj.Guid == LocalPlayer.Guid)
+                        {
+                            LocalPlayer = listObj; // Copy whole listObj to LocalPlayer
+                        }
+                    }
+                    if (listObj.Type == (short)Constants.ObjType.OT_PLAYER || listObj.Type == (short)Constants.ObjType.OT_UNIT || listObj.Type == (short)Constants.ObjType.OT_GAMEOBJ)
+                    {
+                        if (listObj.vector3d != null && LocalPlayer.vector3d != null)
+                        {
+                            listObj.Distance = Math.Round((LocalPlayer.vector3d.Distance(listObj.vector3d)), 2);
+                        }
+                        else
+                        {
+                            listObj.Distance = 999;
+                        }
+                        listObj.PlayerIsFacingTo = GetFacingToUnit(listObj);
+
+                    }
+                    // scan the auras of unit only i unit is near
+                    if (listObj.Distance <= 30 && (listObj.Type == (short)Constants.ObjType.OT_UNIT || listObj.Type == (short)Constants.ObjType.OT_PLAYER))
+                    {
+                        try
+                        {
+                            listObj.Dodged = wowMem.ReadUInt((listObj.UnitFieldsAddress + (uint)Descriptors.WoWUnitFields.Dodged));
+                        }
+                        catch (Exception e)
+                        {
+                            Log.Print("ScanObj() -> listObj.Dodged\r\n" + e.Message, 4);
+                        }
+                        listObj.BuffList = GetUnitBuffs(listObj);
+                        //// give TimeApplied values from last list to the new list of units
+                        //if (LastCachedUnitList.Count != 0)
+                        //{
+                        //    Log.Print("   ");
+                        //    if (listObj.BuffList != null && listObj.BuffList.Count > 0)
+                        //    {
+                        //        listObj.BuffList.ForEach(x => Log.Print("..... " + x.Name));
+                        //        listObj.BuffList.ForEach(x => x.TimeApplied = LastCachedUnitList.FirstOrDefault(o => o.Guid == listObj.Guid).BuffList.FirstOrDefault(z => z.Id == x.Id).TimeApplied);
+                        //    }
+                        //}
+                        listObj.DebuffList = GetUnitDebuffs(listObj);
+                        // give TimeApplied values from last list to the new list of units
+                        //if (LastCachedUnitList.Count != 0)
+                        //{
+                        //    Log.Print("   ");
+                        //    if (listObj.DebuffList != null && listObj.DebuffList.Count > 0)
+                        //    {
+                        //        //listObj.DebuffList.ForEach(x => Log.Print(",,,,, " + x.Name));
+                        //        //foreach(WowObject o in LastCachedUnitList)
+                        //        //{
+                        //        //    if (o.Guid == listObj.Guid)
+                        //        //    {
+                        //        //        Log.Print(",," + o.Guid);
+                        //        //        foreach (Auras x in o.DebuffList)
+                        //        //        {
+                        //        //            foreach (Auras y in listObj.DebuffList)
+                        //        //            {
+                        //        //                if (x.Id == y.Id)
+                        //        //                {
+                        //        //                    listObj.DebuffList.FirstOrDefault(b => b.Id == x.Id).TimeApplied = x.TimeApplied;
+                        //        //                    Log.Print("found buff, take old duration");
+                        //        //                }
+                        //        //            }
+                        //        //        }
+                        //        //    }
+                        //        //}
+                        //        //Log.Print(",,"+ LastCachedUnitList.FirstOrDefault(o => o.Guid == listObj.Guid).Name);
+                        //        //Log.Print(",,," + LastCachedUnitList.FirstOrDefault(o => o.Guid == listObj.Guid).DebuffList.FirstOrDefault().TimeApplied);
+                        //        Auras tempEmptyAura = new Auras("", 1, _stacks: 0);
+                        //        Log.Print("__");
+                        //        listObj.DebuffList.ForEach(x => x.TimeApplied = (LastCachedUnitList.FirstOrDefault(o => o != null && o.Guid == listObj.Guid).DebuffList.FirstOrDefault(z => z != null && z.Id == x.Id) ?? tempEmptyAura).TimeApplied);
+                        //        Log.Print("___");
+                        //    }
 
 
-			//}
-			//Log.Print("[]");
+                        //}
+                        //Log.Print("__1");
+                        listObj.HasBreakableCc = listObj.DebuffList.Exists(c => c.Name == "Polymorph" || c.Name == "Sap" || c.Name == "Blind");
+                    }
+                    else
+                    {
+                        listObj.Dodged = 0;
+                        listObj.BuffList = null;
+                        listObj.DebuffList = null;
+                        listObj.HasBreakableCc = false;
+                    }
+                }
+                //// add again data to localplayer
+                //LocalPlayer = CachedUnitlist.FirstOrDefault(c => c.Guid == LocalPlayer.Guid);
+                //foreach (WowObject listObj in CachedUnitlist)
+                //{
+                //	if (listObj.Type == (short)Constants.ObjType.OT_PLAYER || listObj.Type == (short)Constants.ObjType.OT_UNIT)
+                //	{
+                //		if (listObj.Type == (short)Constants.ObjType.OT_PLAYER)
+                //		{
+                //			Log.Print("Human: ", 0, 0);
+                //		}
+                //		else if (listObj.Type == (short)Constants.ObjType.OT_UNIT)
+                //		{
+                //			Log.Print("Npc:   ", 0, 0);
+                //		}
+                //		Log.Print(z(listObj.Name, 20) + " \t" + z(listObj.Guid.ToString(), 24) + " \t" + z(listObj.Target.Name, 20) + " \t" + listObj.Distance, 0, 0);
+                //		if (listObj.Guid == LocalPlayer.Guid)
+                //		{
+                //			LocalPlayer = listObj; // Copy whole listObj to LocalPlayer
+                //			Log.Print("\t <-- me   ", 0, 0);
+                //		}
+                //		Log.Br();
+                //	}
+
+
+                //}
+                //Log.Print("[]");
+            }
+            //Console.WriteLine("scan blocked");
 		}
 
 
@@ -769,15 +955,22 @@ namespace Revlex
 			List<Auras> objAuras = new List<Auras>();
 			for (int i = 0; i <= 31; i++)
 			{
-				//Alternative: int id = *(int*)(*(uint*)(addr + 8) + auraPos * 4)   //the inner *(uint*) is a pointer to the descriptors
-				uint buffid = wowMem.ReadUInt((uint)(Unit.ObjBaseAddress + 0xB58 + i * 4));   // for i = 0..47
-				byte stacks = wowMem.ReadByte((uint)(Unit.ObjBaseAddress + 0x1e2c + i + 0x108));
-				if (buffid != 0)
-				{
-					//Log.Print("Buff #" + i + ":\t " + (Unit.ObjBaseAddress + 0xB58 + (i * 4)).ToString("X") + "\t id: " + buffid.ToString() + " \t" + (Unit.ObjBaseAddress + 0x1e2c + 0x108 + i).ToString("X") + "Stacks: " + stacks);
-					objAuras.Add(new Auras(GetSpellName(buffid), buffid,1,(uint)stacks + 1));
-					//Log.Print(((uint)(LocalPlayer.ObjBaseAddress + 0xB58 + i * 4)).ToString("X") + ": \t" + buffid.ToString() + " \t" + i.ToString());
-				}
+                //Alternative: int id = *(int*)(*(uint*)(addr + 8) + auraPos * 4)   //the inner *(uint*) is a pointer to the descriptors
+                try
+                {
+                    uint buffid = wowMem.ReadUInt((uint)(Unit.ObjBaseAddress + 0xB58 + i * 4));   // for i = 0..47
+                    byte stacks = wowMem.ReadByte((uint)(Unit.ObjBaseAddress + 0x1e2c + i + 0x108));
+                    if (buffid != 0)
+                    {
+                        //Log.Print("Buff #" + i + ":\t " + (Unit.ObjBaseAddress + 0xB58 + (i * 4)).ToString("X") + "\t id: " + buffid.ToString() + " \t" + (Unit.ObjBaseAddress + 0x1e2c + 0x108 + i).ToString("X") + "Stacks: " + stacks);
+                        objAuras.Add(new Auras(GetSpellName(buffid), buffid, 1, (uint)stacks + 1));
+                        //Log.Print(((uint)(LocalPlayer.ObjBaseAddress + 0xB58 + i * 4)).ToString("X") + ": \t" + buffid.ToString() + " \t" + i.ToString());
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.Print("GetUnitBuffs\r\n" + e.Message, 4);
+                }
 
 			}
 			return objAuras;
@@ -788,16 +981,23 @@ namespace Revlex
 			//Log.Print("Debuff Base:\t " + (Unit.ObjBaseAddress + 0xB58).ToString("X"));
 			for (int i = 32; i <= 47; i++)
 			{
-				//Alternative: int id = *(int*)(*(uint*)(addr + 8) + auraPos * 4)   //the inner *(uint*) is a pointer to the descriptors
-				uint buffid = wowMem.ReadUInt((uint)(Unit.ObjBaseAddress + 0xB58 + i * 4));   // for i = 0..47
-				//byte stacks = wowMem.ReadByte((uint)(Unit.ObjBaseAddress + 0xFA4 + 0xA8 + i));
-				byte stacks = wowMem.ReadByte((uint)(Unit.ObjBaseAddress + 0xF84 + i + 0xA8));
-				if (buffid != 0)
-				{
-					//Log.Print("Debuff #"+i+":\t " + (Unit.ObjBaseAddress + 0xB58 + (i*4)).ToString("X")+ "\t id: " + buffid.ToString() + " \t" + (Unit.ObjBaseAddress + 0xF84 + 0xA8 + i).ToString("X") + "Stacks: " + stacks);
-					//Log.Print("Debuff #"+i+":\t " + (Unit.ObjBaseAddress + 0xB58 + (i*4)).ToString("X")+ "\t id: " + buffid.ToString());
-					objAuras.Add(new Auras(GetSpellName(buffid), buffid, 1, (uint)stacks + 1));
-				}
+                try
+                {
+                    //Alternative: int id = *(int*)(*(uint*)(addr + 8) + auraPos * 4)   //the inner *(uint*) is a pointer to the descriptors
+                    uint buffid = wowMem.ReadUInt((uint)(Unit.ObjBaseAddress + 0xB58 + i * 4));   // for i = 0..47
+                                                                                                  //byte stacks = wowMem.ReadByte((uint)(Unit.ObjBaseAddress + 0xFA4 + 0xA8 + i));
+                    byte stacks = wowMem.ReadByte((uint)(Unit.ObjBaseAddress + 0xF84 + i + 0xA8));
+                    if (buffid != 0)
+                    {
+                        //Log.Print("Debuff #"+i+":\t " + (Unit.ObjBaseAddress + 0xB58 + (i*4)).ToString("X")+ "\t id: " + buffid.ToString() + " \t" + (Unit.ObjBaseAddress + 0xF84 + 0xA8 + i).ToString("X") + "Stacks: " + stacks);
+                        //Log.Print("Debuff #"+i+":\t " + (Unit.ObjBaseAddress + 0xB58 + (i*4)).ToString("X")+ "\t id: " + buffid.ToString());
+                        objAuras.Add(new Auras(GetSpellName(buffid), buffid, 1, (uint)stacks + 1));
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.Print("GetUnitDebuffs\r\n" + e.Message, 4);
+                }
 			}
 			return objAuras;
 		}
@@ -807,24 +1007,30 @@ namespace Revlex
 			//Log.Print("Debuff Base:\t " + (Unit.ObjBaseAddress + 0xB58).ToString("X"));
 			for (int i = 32; i <= 47; i++)
 			{
-				//Alternative: int id = *(int*)(*(uint*)(addr + 8) + auraPos * 4)   //the inner *(uint*) is a pointer to the descriptors
-				uint buffid = wowMem.ReadUInt((uint)(Unit.ObjBaseAddress + 0xB58 + i * 4));   // for i = 0..47
-																							  //byte stacks = wowMem.ReadByte((uint)(Unit.ObjBaseAddress + 0xFA4 + 0xA8 + i));
-				byte stacks = wowMem.ReadByte((uint)(Unit.ObjBaseAddress + 0xF84 + i + 0xA8));
-				if (buffid != 0)
-				{
-					//Log.Print("Debuff #"+i+":\t " + (Unit.ObjBaseAddress + 0xB58 + (i*4)).ToString("X")+ "\t id: " + buffid.ToString() + " \t" + (Unit.ObjBaseAddress + 0xF84 + 0xA8 + i).ToString("X") + "Stacks: " + stacks);
-					//Log.Print("Debuff #"+i+":\t " + (Unit.ObjBaseAddress + 0xB58 + (i*4)).ToString("X")+ "\t id: " + buffid.ToString());
-					if (GetSpellName(buffid) == "Polymorph" || GetSpellName(buffid) == "Sap" || GetSpellName(buffid) == "Blind")
-					{
-						Unit.HasBreakableCc = true;
-						return true;
-					}
-					else
-					{
-						Unit.HasBreakableCc = false;
-					}
-				}
+                try
+                {
+                    //Alternative: int id = *(int*)(*(uint*)(addr + 8) + auraPos * 4)   //the inner *(uint*) is a pointer to the descriptors
+                    uint buffid = wowMem.ReadUInt((uint)(Unit.ObjBaseAddress + 0xB58 + i * 4));   // for i = 0..47
+                    byte stacks = wowMem.ReadByte((uint)(Unit.ObjBaseAddress + 0xF84 + i + 0xA8));
+                    if (buffid != 0)
+                    {
+                        //Log.Print("Debuff #"+i+":\t " + (Unit.ObjBaseAddress + 0xB58 + (i*4)).ToString("X")+ "\t id: " + buffid.ToString() + " \t" + (Unit.ObjBaseAddress + 0xF84 + 0xA8 + i).ToString("X") + "Stacks: " + stacks);
+                        //Log.Print("Debuff #"+i+":\t " + (Unit.ObjBaseAddress + 0xB58 + (i*4)).ToString("X")+ "\t id: " + buffid.ToString());
+                        if (GetSpellName(buffid) == "Polymorph" || GetSpellName(buffid) == "Sap" || GetSpellName(buffid) == "Blind")
+                        {
+                            Unit.HasBreakableCc = true;
+                            return true;
+                        }
+                        else
+                        {
+                            Unit.HasBreakableCc = false;
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.Print("UnitHasBreakableCc\r\n" + e.Message, 4);
+                }
 			}
 			return false;
 		}
@@ -864,12 +1070,32 @@ namespace Revlex
 
 		public uint GetMainhandItemId()
 		{
-			return wowMem.ReadUInt((LocalPlayer.ObjBaseAddress + (uint)Pointers.WowObject.Mainhand));
-		}
+            uint tmp;
+            try
+            {
+                tmp = wowMem.ReadUInt((LocalPlayer.ObjBaseAddress + (uint)Pointers.WowObject.Mainhand));
+                return tmp;
+            }
+            catch (Exception e)
+            {
+                Log.Print("GetMainhandItemId\r\n" + e.Message, 4);
+                return 0;
+            }
+        }
 		public uint GetOffhandItemId()
 		{
-			return wowMem.ReadUInt((LocalPlayer.ObjBaseAddress + (uint)Pointers.WowObject.Offhand));
-		}
+            uint tmp;
+            try
+            {
+                tmp = wowMem.ReadUInt((LocalPlayer.ObjBaseAddress + (uint)Pointers.WowObject.Offhand));
+                return tmp;
+            }
+            catch (Exception e)
+            {
+                Log.Print("GetOffhandItemId\r\n" + e.Message, 4);
+                return 0;
+            }
+        }
 
         public uint GetStacksOfDebuff(WowObject unit, string aura)
         {
@@ -886,15 +1112,22 @@ namespace Revlex
 			while (true)
 			{
 				SpellCounter++;
-				var currentSpellId = wowMem.ReadUInt((uint)(Pointers.ObjectManager.CurPlayerSpellPtr + (SpellCounter * 4)));
-				if (currentSpellId == 0) break;
-				var entryPtr = wowMem.ReadUInt(wowMem.ReadUInt(0x00C0D780 + 8) + currentSpellId * 4);
+                try
+                {
+                    var currentSpellId = wowMem.ReadUInt((uint)(Pointers.ObjectManager.CurPlayerSpellPtr + (SpellCounter * 4)));
+                    if (currentSpellId == 0) break;
+                    var entryPtr = wowMem.ReadUInt(wowMem.ReadUInt(0x00C0D780 + 8) + currentSpellId * 4);
 
-				var entrySpellId = wowMem.ReadUInt(entryPtr);
-				var namePtr = wowMem.ReadUInt(entryPtr + 0x1E0);
-				var name = wowMem.ReadASCIIString(namePtr, 512); // Will default to ascii
-				Spells spell = new Spells(name, 0, entrySpellId);
-				SpellsInSpellBook.Add(spell);
+                    var entrySpellId = wowMem.ReadUInt(entryPtr);
+                    var namePtr = wowMem.ReadUInt(entryPtr + 0x1E0);
+                    var name = wowMem.ReadASCIIString(namePtr, 512); // Will default to ascii
+                    Spells spell = new Spells(name, 0, entrySpellId);
+                    SpellsInSpellBook.Add(spell);
+                }
+                catch (Exception e)
+                {
+                    Log.Print(" GetPlayerSpells\r\n" + e.Message, 4);
+                }
 			}
 			// manually add attack
 			Spells spell2 = new Spells("Attack", 0, 6603);
@@ -936,35 +1169,42 @@ namespace Revlex
 		{
 			//Log.Print("--GetPlayerSpellsOnCooldown");
 			List <SpellsOnCooldown> SpellListOnCd = new List<SpellsOnCooldown>();
-			//Current time in ms
-			var currentTime = wowMem.ReadFloat((uint)Pointers.StaticAddresses.Timestamp) * 1000;
+            //Current time in ms
+            try
+            {
+                var currentTime = wowMem.ReadFloat((uint)Pointers.StaticAddresses.Timestamp) * 1000;
 
-			//Get first list object
-			var currentListObject = wowMem.ReadUInt((uint)Pointers.eSpellHistory.SpellHistory + (uint)Pointers.eSpellHistory.FirstRec);
+                //Get first list object
+                var currentListObject = wowMem.ReadUInt((uint)Pointers.eSpellHistory.SpellHistory + (uint)Pointers.eSpellHistory.FirstRec);
 
-			uint spellId = 0;
-			float cooldown = 0;
-			uint startTime = 0;//get record with latest starttime
-			while ((currentListObject != 0) && ((currentListObject & 1) == 0))
-			{		
-				var currentStartTime = wowMem.ReadUInt(currentListObject + (uint)Pointers.eSpellHistory.StartTime);
-				if (currentStartTime > startTime) //get CD for the latest start time record
-				{
-					startTime = currentStartTime;
-					// there exists 2 offsets with different values for CD, we check both.
-					var spellCDx20 = wowMem.ReadInt(currentListObject + (uint)Pointers.eSpellHistory.SpellCoolDownx20);
-					var spellCDx14 = wowMem.ReadInt(currentListObject + (uint)Pointers.eSpellHistory.SpellCoolDownx14);
-					cooldown = Math.Max((float)Math.Round((startTime + spellCDx20 - currentTime) / 1000, 1), (float)Math.Round((startTime + spellCDx14 - currentTime) / 1000, 1));
-					if (cooldown > 0)
-					{
-						spellId = (uint)wowMem.ReadInt(currentListObject + (uint)Pointers.eSpellHistory.SpellID);
-						SpellsOnCooldown spellOnCd = new SpellsOnCooldown(spellId, cooldown);
-						SpellListOnCd.Add(spellOnCd);
-					}
-				}
-				//Get next list object
-				currentListObject = wowMem.ReadUInt(currentListObject + (uint)Pointers.eSpellHistory.NextRec);
-			}
+                uint spellId = 0;
+                float cooldown = 0;
+                uint startTime = 0;//get record with latest starttime
+                while ((currentListObject != 0) && ((currentListObject & 1) == 0))
+                {
+                    var currentStartTime = wowMem.ReadUInt(currentListObject + (uint)Pointers.eSpellHistory.StartTime);
+                    if (currentStartTime > startTime) //get CD for the latest start time record
+                    {
+                        startTime = currentStartTime;
+                        // there exists 2 offsets with different values for CD, we check both.
+                        var spellCDx20 = wowMem.ReadInt(currentListObject + (uint)Pointers.eSpellHistory.SpellCoolDownx20);
+                        var spellCDx14 = wowMem.ReadInt(currentListObject + (uint)Pointers.eSpellHistory.SpellCoolDownx14);
+                        cooldown = Math.Max((float)Math.Round((startTime + spellCDx20 - currentTime) / 1000, 1), (float)Math.Round((startTime + spellCDx14 - currentTime) / 1000, 1));
+                        if (cooldown > 0)
+                        {
+                            spellId = (uint)wowMem.ReadInt(currentListObject + (uint)Pointers.eSpellHistory.SpellID);
+                            SpellsOnCooldown spellOnCd = new SpellsOnCooldown(spellId, cooldown);
+                            SpellListOnCd.Add(spellOnCd);
+                        }
+                    }
+                    //Get next list object
+                    currentListObject = wowMem.ReadUInt(currentListObject + (uint)Pointers.eSpellHistory.NextRec);
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Print(" GetPlayerSpellsOnCooldown\r\n" + e.Message, 4);
+            }
 			return SpellListOnCd;
 
 
@@ -1041,7 +1281,15 @@ namespace Revlex
 			{
 				uint tmpValue = (uint)tmpEnumArray.GetValue(i);
 				ActionButtonBinding temp = new ActionButtonBinding(tmpValue);
-				temp.SpellId = (uint)wowMem.ReadInt(tmpValue);
+                try
+                {
+                    temp.SpellId = (uint)wowMem.ReadInt(tmpValue);
+                }
+                catch (Exception e)
+                {
+                    temp.SpellId = 0;
+                    Log.Print(" GetActionButtonBindings\r\n" + e.Message, 4);
+                }
 				string[] tmpName = (Enum.GetName(typeof(Pointers.ActionButtons), tmpValue)).Split('_');
 				temp.ActionButtonName = tmpName[0];
 				int tmpStance = 0;
@@ -1104,32 +1352,40 @@ namespace Revlex
 		}
 		public float GetSpellCooldown(uint spellID)
 		{
-			//Current time in ms
-			var currentTime = wowMem.ReadFloat((uint)Pointers.StaticAddresses.Timestamp)*1000;
+            //Current time in ms
+            float currentTime = 0f;
+            uint currentListObject = 0;
+            float cooldown = 0;
+            uint startTime = 0;//get record with latest starttime
 
-			//Get first list object
-			var currentListObject = wowMem.ReadUInt((uint)Pointers.eSpellHistory.SpellHistory + (uint)Pointers.eSpellHistory.FirstRec);
+            try
+            {
+                currentTime = wowMem.ReadFloat((uint)Pointers.StaticAddresses.Timestamp) * 1000;
+                //Get first list object
+                currentListObject = wowMem.ReadUInt((uint)Pointers.eSpellHistory.SpellHistory + (uint)Pointers.eSpellHistory.FirstRec);
 
-			float cooldown = 0;
-			uint startTime = 0;//get record with latest starttime
-			while ((currentListObject != 0) && ((currentListObject & 1) == 0))
-			{
-
-				if (wowMem.ReadInt(currentListObject + (uint)Pointers.eSpellHistory.SpellID) == spellID)//filter by ID here
-				{
-					var currentStartTime = wowMem.ReadUInt(currentListObject + (uint)Pointers.eSpellHistory.StartTime);
-					if (currentStartTime > startTime) //get CD for the latest start time record
-					{
-						startTime = currentStartTime;
-						// there exists 2 offsets with different values for CD, we check both.
-						var spellCDx20 = wowMem.ReadInt(currentListObject + (uint)Pointers.eSpellHistory.SpellCoolDownx20);
-						var spellCDx14 = wowMem.ReadInt(currentListObject + (uint)Pointers.eSpellHistory.SpellCoolDownx14);
-						cooldown = Math.Max((float)Math.Round((startTime + spellCDx20 - currentTime) / 1000, 1), (float)Math.Round((startTime + spellCDx14 - currentTime) / 1000, 1));
-					}
-				}
-				//Get next list object
-				currentListObject = wowMem.ReadUInt(currentListObject + (uint)Pointers.eSpellHistory.NextRec);
-			}
+                while ((currentListObject != 0) && ((currentListObject & 1) == 0))
+                {
+                    if (wowMem.ReadInt(currentListObject + (uint)Pointers.eSpellHistory.SpellID) == spellID)//filter by ID here
+                    {
+                        var currentStartTime = wowMem.ReadUInt(currentListObject + (uint)Pointers.eSpellHistory.StartTime);
+                        if (currentStartTime > startTime) //get CD for the latest start time record
+                        {
+                            startTime = currentStartTime;
+                            // there exists 2 offsets with different values for CD, we check both.
+                            var spellCDx20 = wowMem.ReadInt(currentListObject + (uint)Pointers.eSpellHistory.SpellCoolDownx20);
+                            var spellCDx14 = wowMem.ReadInt(currentListObject + (uint)Pointers.eSpellHistory.SpellCoolDownx14);
+                            cooldown = Math.Max((float)Math.Round((startTime + spellCDx20 - currentTime) / 1000, 1), (float)Math.Round((startTime + spellCDx14 - currentTime) / 1000, 1));
+                        }
+                    }
+                    //Get next list object
+                    currentListObject = wowMem.ReadUInt(currentListObject + (uint)Pointers.eSpellHistory.NextRec);
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Print(" GetSpellCooldown\r\n" + e.Message, 4);
+            }
 			return (cooldown < 0) ? 0 : cooldown;
 		}
 
@@ -1137,37 +1393,55 @@ namespace Revlex
 		{
 			get
 			{
-				//Current time in ms
-				var currentTime = wowMem.ReadFloat((uint)Pointers.StaticAddresses.Timestamp)*1000;
+                float currentTime = 0f;
+                uint currentListObject = 0;
+                try
+                {
+                    //Current time in ms
+                    currentTime = wowMem.ReadFloat((uint)Pointers.StaticAddresses.Timestamp) * 1000;
+                    //Get first list object
+                    currentListObject = wowMem.ReadUInt((uint)Pointers.eSpellHistory.SpellHistory + (uint)Pointers.eSpellHistory.FirstRec);
 
-				//Get first list object
-				var currentListObject = wowMem.ReadUInt((uint)Pointers.eSpellHistory.SpellHistory + (uint)Pointers.eSpellHistory.FirstRec);
+                    while ((currentListObject != 0) && ((currentListObject & 1) == 0))
+                    {
+                        var bytes = wowMem.ReadBytes(currentListObject, 0x100);
+                        //Start time of the spell cooldown in ms
+                        var startTime = wowMem.ReadUInt(currentListObject + (uint)Pointers.eSpellHistory.StartTime);
 
-				while ((currentListObject != 0) && ((currentListObject & 1) == 0))
-				{
-					var bytes = wowMem.ReadBytes(currentListObject, 0x100);
-					//Start time of the spell cooldown in ms
-					var startTime = wowMem.ReadUInt(currentListObject + (uint)Pointers.eSpellHistory.StartTime);
+                        //Absolute gcd of the spell in ms
+                        var globalCooldown = wowMem.ReadUInt(currentListObject + (uint)Pointers.eSpellHistory.GlobalCooldown);
 
-					//Absolute gcd of the spell in ms
-					var globalCooldown = wowMem.ReadUInt(currentListObject + (uint)Pointers.eSpellHistory.GlobalCooldown);
+                        //Spell on gcd?
+                        if ((startTime + globalCooldown) > currentTime)
+                            return true;
 
-					//Spell on gcd?
-					if ((startTime + globalCooldown) > currentTime)
-						return true;
-
-
-					//Get next list object
-					currentListObject = wowMem.ReadUInt(currentListObject + (uint)Pointers.eSpellHistory.NextRec);
-				}
-				return false;
+                        //Get next list object
+                        currentListObject = wowMem.ReadUInt(currentListObject + (uint)Pointers.eSpellHistory.NextRec);
+                    }
+                    return false;
+                }
+                catch (Exception e)
+                {
+                    Log.Print(" var GlobalCooldown\r\n" + e.Message, 4);
+                    return false;
+                }
 			}
 		}
 
 
 		public uint GetStance()
 		{
-			return wowMem.ReadUInt((uint)Pointers.StaticAddresses.Stance);
+            uint tmp = 0;
+            try
+            {
+                tmp = wowMem.ReadUInt((uint)Pointers.StaticAddresses.Stance);
+                return tmp;
+            }
+            catch (Exception e)
+            {
+                Log.Print("GetStance\r\n" + e.Message, 4);
+                return 0;
+            }
 		}
 
 		internal string GetSpellName(uint id)
