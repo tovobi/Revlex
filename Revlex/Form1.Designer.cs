@@ -46,6 +46,7 @@
             this.pnlRadarCfg = new System.Windows.Forms.Panel();
             this.btnRadarAccept = new System.Windows.Forms.Button();
             this.pnlRadarCfgValue = new System.Windows.Forms.Panel();
+            this.txtRadarSizeY = new System.Windows.Forms.TextBox();
             this.cbxEnableBorder = new System.Windows.Forms.CheckBox();
             this.txtRadarSizeX = new System.Windows.Forms.TextBox();
             this.txtRadarYPos = new System.Windows.Forms.TextBox();
@@ -72,7 +73,20 @@
             this.lblWowFolder = new System.Windows.Forms.Label();
             this.btnSearchWowFolder = new System.Windows.Forms.Button();
             this.timerCheckHook = new System.Windows.Forms.Timer(this.components);
-            this.txtRadarSizeY = new System.Windows.Forms.TextBox();
+            this.cbxRadarHerbs = new System.Windows.Forms.CheckBox();
+            this.cbxRadarVeins = new System.Windows.Forms.CheckBox();
+            this.lblRadarHerbs = new System.Windows.Forms.Label();
+            this.lblRadarVeins = new System.Windows.Forms.Label();
+            this.lblRadarFriendlyPlayer = new System.Windows.Forms.Label();
+            this.lblRadarEnemyPlayer = new System.Windows.Forms.Label();
+            this.cbxRadarEnemyPlayer = new System.Windows.Forms.CheckBox();
+            this.cbxRadarFriendlyPlayer = new System.Windows.Forms.CheckBox();
+            this.lblSectionDisplay = new System.Windows.Forms.Label();
+            this.lblRadarSound = new System.Windows.Forms.Label();
+            this.cbxSoundFriendlyPlayer = new System.Windows.Forms.CheckBox();
+            this.cbxSoundEnemyPlayer = new System.Windows.Forms.CheckBox();
+            this.cbxSoundHerbs = new System.Windows.Forms.CheckBox();
+            this.cbxSoundVeins = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPageObjects.SuspendLayout();
             this.tabPageRotation.SuspendLayout();
@@ -220,12 +234,12 @@
             this.pnlRadarCfg.Controls.Add(this.pnlRadarCfgKey);
             this.pnlRadarCfg.Location = new System.Drawing.Point(6, 7);
             this.pnlRadarCfg.Name = "pnlRadarCfg";
-            this.pnlRadarCfg.Size = new System.Drawing.Size(322, 279);
+            this.pnlRadarCfg.Size = new System.Drawing.Size(322, 392);
             this.pnlRadarCfg.TabIndex = 2;
             // 
             // btnRadarAccept
             // 
-            this.btnRadarAccept.Location = new System.Drawing.Point(4, 205);
+            this.btnRadarAccept.Location = new System.Drawing.Point(4, 368);
             this.btnRadarAccept.Name = "btnRadarAccept";
             this.btnRadarAccept.Size = new System.Drawing.Size(75, 23);
             this.btnRadarAccept.TabIndex = 3;
@@ -235,6 +249,16 @@
             // 
             // pnlRadarCfgValue
             // 
+            this.pnlRadarCfgValue.Controls.Add(this.cbxSoundVeins);
+            this.pnlRadarCfgValue.Controls.Add(this.cbxSoundHerbs);
+            this.pnlRadarCfgValue.Controls.Add(this.cbxSoundEnemyPlayer);
+            this.pnlRadarCfgValue.Controls.Add(this.cbxSoundFriendlyPlayer);
+            this.pnlRadarCfgValue.Controls.Add(this.lblRadarSound);
+            this.pnlRadarCfgValue.Controls.Add(this.lblSectionDisplay);
+            this.pnlRadarCfgValue.Controls.Add(this.cbxRadarFriendlyPlayer);
+            this.pnlRadarCfgValue.Controls.Add(this.cbxRadarEnemyPlayer);
+            this.pnlRadarCfgValue.Controls.Add(this.cbxRadarVeins);
+            this.pnlRadarCfgValue.Controls.Add(this.cbxRadarHerbs);
             this.pnlRadarCfgValue.Controls.Add(this.txtRadarSizeY);
             this.pnlRadarCfgValue.Controls.Add(this.cbxEnableBorder);
             this.pnlRadarCfgValue.Controls.Add(this.txtRadarSizeX);
@@ -243,13 +267,21 @@
             this.pnlRadarCfgValue.Controls.Add(this.cbxEnableRadar);
             this.pnlRadarCfgValue.Location = new System.Drawing.Point(91, 0);
             this.pnlRadarCfgValue.Name = "pnlRadarCfgValue";
-            this.pnlRadarCfgValue.Size = new System.Drawing.Size(126, 189);
+            this.pnlRadarCfgValue.Size = new System.Drawing.Size(126, 353);
             this.pnlRadarCfgValue.TabIndex = 2;
+            // 
+            // txtRadarSizeY
+            // 
+            this.txtRadarSizeY.Location = new System.Drawing.Point(57, 84);
+            this.txtRadarSizeY.Name = "txtRadarSizeY";
+            this.txtRadarSizeY.Size = new System.Drawing.Size(46, 20);
+            this.txtRadarSizeY.TabIndex = 5;
+            this.txtRadarSizeY.Text = "165";
             // 
             // cbxEnableBorder
             // 
             this.cbxEnableBorder.AutoSize = true;
-            this.cbxEnableBorder.Location = new System.Drawing.Point(4, 112);
+            this.cbxEnableBorder.Location = new System.Drawing.Point(4, 111);
             this.cbxEnableBorder.Name = "cbxEnableBorder";
             this.cbxEnableBorder.Size = new System.Drawing.Size(15, 14);
             this.cbxEnableBorder.TabIndex = 4;
@@ -292,6 +324,10 @@
             // 
             // pnlRadarCfgKey
             // 
+            this.pnlRadarCfgKey.Controls.Add(this.lblRadarEnemyPlayer);
+            this.pnlRadarCfgKey.Controls.Add(this.lblRadarFriendlyPlayer);
+            this.pnlRadarCfgKey.Controls.Add(this.lblRadarVeins);
+            this.pnlRadarCfgKey.Controls.Add(this.lblRadarHerbs);
             this.pnlRadarCfgKey.Controls.Add(this.lblRadarBorder);
             this.pnlRadarCfgKey.Controls.Add(this.lblRadarSize);
             this.pnlRadarCfgKey.Controls.Add(this.lblRadarYPos);
@@ -299,13 +335,13 @@
             this.pnlRadarCfgKey.Controls.Add(this.lblEnableRadar);
             this.pnlRadarCfgKey.Location = new System.Drawing.Point(0, 0);
             this.pnlRadarCfgKey.Name = "pnlRadarCfgKey";
-            this.pnlRadarCfgKey.Size = new System.Drawing.Size(90, 190);
+            this.pnlRadarCfgKey.Size = new System.Drawing.Size(90, 353);
             this.pnlRadarCfgKey.TabIndex = 1;
             // 
             // lblRadarBorder
             // 
             this.lblRadarBorder.AutoSize = true;
-            this.lblRadarBorder.Location = new System.Drawing.Point(0, 112);
+            this.lblRadarBorder.Location = new System.Drawing.Point(0, 115);
             this.lblRadarBorder.Name = "lblRadarBorder";
             this.lblRadarBorder.Size = new System.Drawing.Size(74, 13);
             this.lblRadarBorder.TabIndex = 4;
@@ -505,13 +541,139 @@
             // 
             this.timerCheckHook.Tick += new System.EventHandler(this.timerCheckHook_Tick);
             // 
-            // txtRadarSizeY
+            // cbxRadarHerbs
             // 
-            this.txtRadarSizeY.Location = new System.Drawing.Point(57, 84);
-            this.txtRadarSizeY.Name = "txtRadarSizeY";
-            this.txtRadarSizeY.Size = new System.Drawing.Size(46, 20);
-            this.txtRadarSizeY.TabIndex = 5;
-            this.txtRadarSizeY.Text = "165";
+            this.cbxRadarHerbs.AutoSize = true;
+            this.cbxRadarHerbs.Checked = true;
+            this.cbxRadarHerbs.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbxRadarHerbs.Location = new System.Drawing.Point(4, 231);
+            this.cbxRadarHerbs.Name = "cbxRadarHerbs";
+            this.cbxRadarHerbs.Size = new System.Drawing.Size(15, 14);
+            this.cbxRadarHerbs.TabIndex = 6;
+            this.cbxRadarHerbs.UseVisualStyleBackColor = true;
+            // 
+            // cbxRadarVeins
+            // 
+            this.cbxRadarVeins.AutoSize = true;
+            this.cbxRadarVeins.Location = new System.Drawing.Point(4, 258);
+            this.cbxRadarVeins.Name = "cbxRadarVeins";
+            this.cbxRadarVeins.Size = new System.Drawing.Size(15, 14);
+            this.cbxRadarVeins.TabIndex = 7;
+            this.cbxRadarVeins.UseVisualStyleBackColor = true;
+            // 
+            // lblRadarHerbs
+            // 
+            this.lblRadarHerbs.AutoSize = true;
+            this.lblRadarHerbs.Location = new System.Drawing.Point(0, 231);
+            this.lblRadarHerbs.Name = "lblRadarHerbs";
+            this.lblRadarHerbs.Size = new System.Drawing.Size(38, 13);
+            this.lblRadarHerbs.TabIndex = 5;
+            this.lblRadarHerbs.Text = "Herbs:";
+            // 
+            // lblRadarVeins
+            // 
+            this.lblRadarVeins.AutoSize = true;
+            this.lblRadarVeins.Location = new System.Drawing.Point(0, 258);
+            this.lblRadarVeins.Name = "lblRadarVeins";
+            this.lblRadarVeins.Size = new System.Drawing.Size(36, 13);
+            this.lblRadarVeins.TabIndex = 6;
+            this.lblRadarVeins.Text = "Veins:";
+            // 
+            // lblRadarFriendlyPlayer
+            // 
+            this.lblRadarFriendlyPlayer.AutoSize = true;
+            this.lblRadarFriendlyPlayer.Location = new System.Drawing.Point(0, 177);
+            this.lblRadarFriendlyPlayer.Name = "lblRadarFriendlyPlayer";
+            this.lblRadarFriendlyPlayer.Size = new System.Drawing.Size(78, 13);
+            this.lblRadarFriendlyPlayer.TabIndex = 7;
+            this.lblRadarFriendlyPlayer.Text = "Friendly Player:";
+            // 
+            // lblRadarEnemyPlayer
+            // 
+            this.lblRadarEnemyPlayer.AutoSize = true;
+            this.lblRadarEnemyPlayer.Location = new System.Drawing.Point(0, 204);
+            this.lblRadarEnemyPlayer.Name = "lblRadarEnemyPlayer";
+            this.lblRadarEnemyPlayer.Size = new System.Drawing.Size(74, 13);
+            this.lblRadarEnemyPlayer.TabIndex = 8;
+            this.lblRadarEnemyPlayer.Text = "Enemy Player:";
+            // 
+            // cbxRadarEnemyPlayer
+            // 
+            this.cbxRadarEnemyPlayer.AutoSize = true;
+            this.cbxRadarEnemyPlayer.Checked = true;
+            this.cbxRadarEnemyPlayer.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbxRadarEnemyPlayer.Location = new System.Drawing.Point(4, 204);
+            this.cbxRadarEnemyPlayer.Name = "cbxRadarEnemyPlayer";
+            this.cbxRadarEnemyPlayer.Size = new System.Drawing.Size(15, 14);
+            this.cbxRadarEnemyPlayer.TabIndex = 8;
+            this.cbxRadarEnemyPlayer.UseVisualStyleBackColor = true;
+            // 
+            // cbxRadarFriendlyPlayer
+            // 
+            this.cbxRadarFriendlyPlayer.AutoSize = true;
+            this.cbxRadarFriendlyPlayer.Location = new System.Drawing.Point(4, 177);
+            this.cbxRadarFriendlyPlayer.Name = "cbxRadarFriendlyPlayer";
+            this.cbxRadarFriendlyPlayer.Size = new System.Drawing.Size(15, 14);
+            this.cbxRadarFriendlyPlayer.TabIndex = 9;
+            this.cbxRadarFriendlyPlayer.UseVisualStyleBackColor = true;
+            // 
+            // lblSectionDisplay
+            // 
+            this.lblSectionDisplay.AutoSize = true;
+            this.lblSectionDisplay.Location = new System.Drawing.Point(0, 150);
+            this.lblSectionDisplay.Name = "lblSectionDisplay";
+            this.lblSectionDisplay.Size = new System.Drawing.Size(41, 13);
+            this.lblSectionDisplay.TabIndex = 10;
+            this.lblSectionDisplay.Text = "Display";
+            // 
+            // lblRadarSound
+            // 
+            this.lblRadarSound.AutoSize = true;
+            this.lblRadarSound.Location = new System.Drawing.Point(57, 150);
+            this.lblRadarSound.Name = "lblRadarSound";
+            this.lblRadarSound.Size = new System.Drawing.Size(38, 13);
+            this.lblRadarSound.TabIndex = 11;
+            this.lblRadarSound.Text = "Sound";
+            // 
+            // cbxSoundFriendlyPlayer
+            // 
+            this.cbxSoundFriendlyPlayer.AutoSize = true;
+            this.cbxSoundFriendlyPlayer.Location = new System.Drawing.Point(61, 177);
+            this.cbxSoundFriendlyPlayer.Name = "cbxSoundFriendlyPlayer";
+            this.cbxSoundFriendlyPlayer.Size = new System.Drawing.Size(15, 14);
+            this.cbxSoundFriendlyPlayer.TabIndex = 12;
+            this.cbxSoundFriendlyPlayer.UseVisualStyleBackColor = true;
+            // 
+            // cbxSoundEnemyPlayer
+            // 
+            this.cbxSoundEnemyPlayer.AutoSize = true;
+            this.cbxSoundEnemyPlayer.Checked = true;
+            this.cbxSoundEnemyPlayer.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbxSoundEnemyPlayer.Location = new System.Drawing.Point(61, 204);
+            this.cbxSoundEnemyPlayer.Name = "cbxSoundEnemyPlayer";
+            this.cbxSoundEnemyPlayer.Size = new System.Drawing.Size(15, 14);
+            this.cbxSoundEnemyPlayer.TabIndex = 13;
+            this.cbxSoundEnemyPlayer.UseVisualStyleBackColor = true;
+            // 
+            // cbxSoundHerbs
+            // 
+            this.cbxSoundHerbs.AutoSize = true;
+            this.cbxSoundHerbs.Checked = true;
+            this.cbxSoundHerbs.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbxSoundHerbs.Location = new System.Drawing.Point(61, 231);
+            this.cbxSoundHerbs.Name = "cbxSoundHerbs";
+            this.cbxSoundHerbs.Size = new System.Drawing.Size(15, 14);
+            this.cbxSoundHerbs.TabIndex = 14;
+            this.cbxSoundHerbs.UseVisualStyleBackColor = true;
+            // 
+            // cbxSoundVeins
+            // 
+            this.cbxSoundVeins.AutoSize = true;
+            this.cbxSoundVeins.Location = new System.Drawing.Point(61, 258);
+            this.cbxSoundVeins.Name = "cbxSoundVeins";
+            this.cbxSoundVeins.Size = new System.Drawing.Size(15, 14);
+            this.cbxSoundVeins.TabIndex = 15;
+            this.cbxSoundVeins.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -601,6 +763,20 @@
         private System.Windows.Forms.CheckBox cbxEnableBorder;
         private System.Windows.Forms.Label lblRadarBorder;
         private System.Windows.Forms.TextBox txtRadarSizeY;
+        private System.Windows.Forms.CheckBox cbxSoundVeins;
+        private System.Windows.Forms.CheckBox cbxSoundHerbs;
+        private System.Windows.Forms.CheckBox cbxSoundEnemyPlayer;
+        private System.Windows.Forms.CheckBox cbxSoundFriendlyPlayer;
+        private System.Windows.Forms.Label lblRadarSound;
+        private System.Windows.Forms.Label lblSectionDisplay;
+        private System.Windows.Forms.CheckBox cbxRadarFriendlyPlayer;
+        private System.Windows.Forms.CheckBox cbxRadarEnemyPlayer;
+        private System.Windows.Forms.CheckBox cbxRadarVeins;
+        private System.Windows.Forms.CheckBox cbxRadarHerbs;
+        private System.Windows.Forms.Label lblRadarEnemyPlayer;
+        private System.Windows.Forms.Label lblRadarFriendlyPlayer;
+        private System.Windows.Forms.Label lblRadarVeins;
+        private System.Windows.Forms.Label lblRadarHerbs;
     }
 }
 

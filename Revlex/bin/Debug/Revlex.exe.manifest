@@ -91,14 +91,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Revlex.exe" size="198544">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Revlex.exe" size="203152">
       <assemblyIdentity name="Revlex" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>NDXnTH+a93w5rkW7/JU8AgVVfId7v9HMpdxNEBt+QJ8=</dsig:DigestValue>
+        <dsig:DigestValue>SKrg5nf5hX551Pwje8pGPTPA4qU9TIZuYgzlElIpT5Y=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

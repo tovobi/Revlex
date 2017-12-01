@@ -1580,9 +1580,25 @@ namespace Revlex
         {
             RadarInstance = new RadarOverlay.RadarForm(Int32.Parse(txtRadarXPos.Text), Int32.Parse(txtRadarYPos.Text), Int32.Parse(txtRadarSizeX.Text), this);
             Application.Run(RadarInstance);
-            RadarInstance.BeginInvoke(new Revlex.RadarOverlay.RadarFormPosition(RadarInstance.ChangePosition), new object[] { Int32.Parse(txtRadarXPos.Text), Int32.Parse(txtRadarYPos.Text) });
-            RadarInstance.BeginInvoke(new Revlex.RadarOverlay.RadarFormSize(RadarInstance.ChangeSize), new object[] { Int32.Parse(txtRadarSizeX.Text), Int32.Parse(txtRadarSizeY.Text) });
-            RadarInstance.BeginInvoke(new Revlex.RadarOverlay.RadarFormBorder(RadarInstance.SwitchBorderState), new object[] { cbxEnableBorder.Checked });
+            RadarInstance.BeginInvoke(new Revlex.RadarOverlay.RadarSettings(RadarInstance.SetRadarSettingsVars), 
+                new object[] {
+                    Int32.Parse(txtRadarXPos.Text),
+                    Int32.Parse(txtRadarYPos.Text),
+                    Int32.Parse(txtRadarSizeX.Text),
+                    Int32.Parse(txtRadarSizeY.Text),
+                    cbxEnableBorder.Checked,
+                    cbxRadarEnemyPlayer.Checked,
+                    cbxSoundEnemyPlayer.Checked,
+                    cbxRadarFriendlyPlayer.Checked,
+                    cbxSoundFriendlyPlayer.Checked,
+                    cbxRadarVeins.Checked,
+                    cbxSoundVeins.Checked,
+                    cbxRadarHerbs.Checked,
+                    cbxSoundHerbs.Checked
+                });
+            //RadarInstance.BeginInvoke(new Revlex.RadarOverlay.RadarFormPosition(RadarInstance.ChangePosition), new object[] { Int32.Parse(txtRadarXPos.Text), Int32.Parse(txtRadarYPos.Text) });
+            //RadarInstance.BeginInvoke(new Revlex.RadarOverlay.RadarFormSize(RadarInstance.ChangeSize), new object[] { Int32.Parse(txtRadarSizeX.Text), Int32.Parse(txtRadarSizeY.Text) });
+            //RadarInstance.BeginInvoke(new Revlex.RadarOverlay.RadarFormBorder(RadarInstance.SwitchBorderState), new object[] { cbxEnableBorder.Checked });
         }
         private void cbxEnableRadar_CheckedChanged(object sender, EventArgs e)
         {
@@ -1604,9 +1620,25 @@ namespace Revlex
 
         private void btnRadarAccept_Click(object sender, EventArgs e)
         {
-            RadarInstance.BeginInvoke(new Revlex.RadarOverlay.RadarFormPosition(RadarInstance.ChangePosition), new object[] { Int32.Parse(txtRadarXPos.Text), Int32.Parse(txtRadarYPos.Text) });
-            RadarInstance.BeginInvoke(new Revlex.RadarOverlay.RadarFormSize(RadarInstance.ChangeSize), new object[] { Int32.Parse(txtRadarSizeX.Text), Int32.Parse(txtRadarSizeY.Text) });
-            RadarInstance.BeginInvoke(new Revlex.RadarOverlay.RadarFormBorder(RadarInstance.SwitchBorderState), new object[] { cbxEnableBorder.Checked });
+            //RadarInstance.BeginInvoke(new Revlex.RadarOverlay.RadarFormPosition(RadarInstance.ChangePosition), new object[] { Int32.Parse(txtRadarXPos.Text), Int32.Parse(txtRadarYPos.Text) });
+            //RadarInstance.BeginInvoke(new Revlex.RadarOverlay.RadarFormSize(RadarInstance.ChangeSize), new object[] { Int32.Parse(txtRadarSizeX.Text), Int32.Parse(txtRadarSizeY.Text) });
+            //RadarInstance.BeginInvoke(new Revlex.RadarOverlay.RadarFormBorder(RadarInstance.SwitchBorderState), new object[] { cbxEnableBorder.Checked });
+            RadarInstance.BeginInvoke(new Revlex.RadarOverlay.RadarSettings(RadarInstance.SetRadarSettingsVars),
+                new object[] {
+                    Int32.Parse(txtRadarXPos.Text),
+                    Int32.Parse(txtRadarYPos.Text),
+                    Int32.Parse(txtRadarSizeX.Text),
+                    Int32.Parse(txtRadarSizeY.Text),
+                    cbxEnableBorder.Checked,
+                    cbxRadarEnemyPlayer.Checked,
+                    cbxSoundEnemyPlayer.Checked,
+                    cbxRadarFriendlyPlayer.Checked,
+                    cbxSoundFriendlyPlayer.Checked,
+                    cbxRadarVeins.Checked,
+                    cbxSoundVeins.Checked,
+                    cbxRadarHerbs.Checked,
+                    cbxSoundHerbs.Checked
+                });
         }
 
 

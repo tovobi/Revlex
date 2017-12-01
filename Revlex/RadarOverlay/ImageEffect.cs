@@ -86,14 +86,35 @@ namespace Revlex.RadarOverlay
         {
             Bitmap returnBitmap = new Bitmap(bitmap.Width, bitmap.Height);
             Graphics graphics = Graphics.FromImage(returnBitmap);
-
+            Console.WriteLine(":" +angle.ToString());
             graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
             graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-            //graphics.TranslateTransform((float)bitmap.Width / 2, (float)bitmap.Height / 2);
-            //graphics.RotateTransform(angle);
-            //graphics.TranslateTransform(-(float)bitmap.Width / 2, -(float)bitmap.Height / 2);
+            graphics.TranslateTransform((float)bitmap.Width / 2, (float)bitmap.Height / 2);
+            graphics.RotateTransform(angle);
+            graphics.TranslateTransform(-(float)bitmap.Width / 2, -(float)bitmap.Height / 2);
             graphics.DrawImage(bitmap, new Point(0, 0));
             return returnBitmap;
+        }
+        public static Bitmap rotateImage2(Bitmap bitmap, float angle)
+        {
+            Bitmap returnBitmap = new Bitmap(bitmap.Width, bitmap.Height);
+            Graphics graphics = Graphics.FromImage(returnBitmap);
+            graphics.TranslateTransform((float)bitmap.Width / 2, (float)bitmap.Height / 2);
+            graphics.RotateTransform(angle);
+            graphics.TranslateTransform(-(float)bitmap.Width / 2, -(float)bitmap.Height / 2);
+            graphics.DrawImage(bitmap, new Point(0, 0));
+            return returnBitmap;
+        }
+        public static Bitmap rotateImageUsi3(Bitmap bitmap, float angle)
+        {
+            using (Graphics graphics = Graphics.FromImage(bitmap))
+            {
+                graphics.TranslateTransform((float)bitmap.Width / 2, (float)bitmap.Height / 2);
+                graphics.RotateTransform(angle);
+                graphics.TranslateTransform(-(float)bitmap.Width / 2, -(float)bitmap.Height / 2);
+                graphics.DrawImage(bitmap, new Point(0, 0));
+            }
+            return bitmap;
         }
     }
 }
