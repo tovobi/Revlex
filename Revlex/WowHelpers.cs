@@ -77,7 +77,7 @@ namespace Revlex
                 Log.Print("\r\nForce disconnect. to much errors within " + (ErrorTimespan/1000) + "s:");
                 foreach (ErrorData k in tmpErrorList)
                 {
-                    Log.Print("     " + k.Index.ToString() + ": " + k.Name.Substring(0, 25) + "...");
+                    Log.Print("     " + k.Index.ToString() + ": " + k.Name.Substring(0, 80) + "...");
                 }
                 
             }
@@ -748,8 +748,7 @@ namespace Revlex
                     catch (Exception e)
                     {
                         LogErrors("CurrentObject: " + e.ToString());
-                        Console.WriteLine(e.ToString());
-                        break;
+                        Console.WriteLine("CurrentObject: " + e.ToString());
                     }
                     try
                     {

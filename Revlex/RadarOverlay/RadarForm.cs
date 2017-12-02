@@ -253,6 +253,17 @@ namespace Revlex.RadarOverlay
                     GfxLayer1.DrawImage(ImageEffect.ColorTint(k.IconType, k.IconColor.R, k.IconColor.G, k.IconColor.B), k.X, k.Y, k.Width, k.Height);
                 }
             }
+
+            // draw player
+            DrawPlayerDot(playerA, (double)(PlayerDotRotation - (Math.PI * 2)) * -1, new Point((panel1.Size.Width / 2) + 2, (panel1.Size.Height / 2) - 3), 10);
+
+            if (DisplaySearchObj != "")
+            {
+                foreach (RadarEntity k in RadarSearchUnits)
+                {
+                    GfxLayer1.DrawImage(ImageEffect.ColorTint(k.IconType, k.IconColor.R, k.IconColor.G, k.IconColor.B), k.X, k.Y, k.Width, k.Height);
+                }
+            }
             if (DisplayEnemyPlayer)
             {
                 foreach (RadarEntity k in RadarEnemyUnits)
@@ -281,15 +292,13 @@ namespace Revlex.RadarOverlay
                     GfxLayer1.DrawImage(ImageEffect.ColorTint(k.IconType, k.IconColor.R, k.IconColor.G, k.IconColor.B), k.X, k.Y, k.Width, k.Height);
                 }
             }
-            // draw player
-            DrawPlayerDot(playerA, (double)(PlayerDotRotation - (Math.PI * 2)) * -1, new Point((panel1.Size.Width / 2) + 2, (panel1.Size.Height / 2) - 3), 10);
+            // draw player dot border
+            DrawPlayerDotBorder(playerA, (double)(PlayerDotRotation - (Math.PI * 2)) * -1, new Point((panel1.Size.Width / 2) + 2, (panel1.Size.Height / 2) - 3), 10);
 
             if (BorderState)
             {
                 DrawBorder();
             }
-
-
 
 
         }
@@ -309,6 +318,21 @@ namespace Revlex.RadarOverlay
                 new Point(center.X + (int)Math.Round(Math.Sin(Rotation + Math.PI - tailDegree) * hypWing,0),  center.Y + ((int)Math.Round(Math.Cos(Rotation + Math.PI - tailDegree) * hypWing,0)*-1) )
             };
             GfxLayer1.FillPolygon(playerBrush, p);
+        }
+        private void DrawPlayerDotBorder(Bitmap player, double Rotation, Point center, int size)
+        {
+            Pen BlackPen = new Pen(Color.Black);
+            SolidBrush playerBrush = new SolidBrush(Color.FromArgb(255, 255, 255, 255));
+            double tailDegree = Math.PI / 4;
+            double lengthNeedle = size;
+            double lengthTail = size / 2;
+            double lengthWing = size / 2;
+            double hypWing = Math.Sqrt(Math.Pow(lengthTail, 2) + Math.Pow(lengthWing, 2));
+            Point[] p = new Point[] {
+                new Point(center.X + (int)Math.Round(Math.Sin(Rotation) * lengthNeedle,0), center.Y + (int)Math.Round(Math.Cos(Rotation) * lengthNeedle,0)*-1),
+                new Point(center.X + (int)Math.Round(Math.Sin(Rotation + Math.PI + tailDegree) * hypWing,0),  center.Y + ((int)Math.Round(Math.Cos(Rotation + Math.PI + tailDegree) * hypWing,0)*-1) ),
+                new Point(center.X + (int)Math.Round(Math.Sin(Rotation + Math.PI - tailDegree) * hypWing,0),  center.Y + ((int)Math.Round(Math.Cos(Rotation + Math.PI - tailDegree) * hypWing,0)*-1) )
+            };
             GfxLayer1.DrawPolygon(BlackPen, p);
         }
 
@@ -455,13 +479,12 @@ namespace Revlex.RadarOverlay
                 foreach (WowObject item in WowHelperObj.GetSearchObj(splittedSearchObj))
                 {
                     relativeVector2d = item.GetRadarPosition((uint)panel1.Size.Width, (uint)panel1.Size.Height, 230, WowHelperObj.LocalPlayer.vector3d.x, WowHelperObj.LocalPlayer.vector3d.y);
-                    Color iconColor = Color.FromArgb(192, 0, 255);
+                    Color iconColor = Color.FromArgb(200, 128, 255);
                     RadarHerbUnits.Add(new RadarEntity((int)relativeVector2d.x-2, (int)relativeVector2d.y-5, 8, 8, iconColor, Circle_8));
 
                     SearchDetected = true;
                     SearchDetectedBeep = true;
                     u++;
-                    Console.WriteLine(item.Name);
                 }
             }
 
