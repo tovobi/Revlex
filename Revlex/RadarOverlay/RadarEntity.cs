@@ -11,12 +11,16 @@ namespace Revlex.RadarOverlay
     {
         public int X { get; set; }
         public int Y { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
         public Color IconColor;
         public Bitmap IconType;
-        public RadarEntity(int _x, int _y, System.Drawing.Color _iconColor, Bitmap _iconType)
+        public RadarEntity(int _x, int _y, int _width, int _height, System.Drawing.Color _iconColor, Bitmap _iconType)
         {
             X = _x;
             Y = _y;
+            Width = _width;
+            Height = _height;
             IconColor = _iconColor;
             IconType = _iconType;
         }

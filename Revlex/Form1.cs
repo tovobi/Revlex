@@ -1078,6 +1078,7 @@ namespace Revlex
         {
             // Form1_Load() will executed AFTER InitializeAdditionalComponent() 
             timerCheckHook.Start();
+            timerCheckErrors.Start();
             RvxButtonState(cmdRefreshUi, 0, false);
             RvxButtonState(cmdInternalUpdate, 0, false);
             RadarList = new WowUnitList(txtSearchUnit, 400, dataGridWowObjList, WowHelperObj);
@@ -1546,6 +1547,7 @@ namespace Revlex
                 gkh.unhook();
                 Log.Print("Hook off");
             }
+
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -1594,7 +1596,9 @@ namespace Revlex
                     cbxRadarVeins.Checked,
                     cbxSoundVeins.Checked,
                     cbxRadarHerbs.Checked,
-                    cbxSoundHerbs.Checked
+                    cbxSoundHerbs.Checked,
+                    txtRadarSearch.Text,
+                    cbxRadarSearch.Checked
                 });
             //RadarInstance.BeginInvoke(new Revlex.RadarOverlay.RadarFormPosition(RadarInstance.ChangePosition), new object[] { Int32.Parse(txtRadarXPos.Text), Int32.Parse(txtRadarYPos.Text) });
             //RadarInstance.BeginInvoke(new Revlex.RadarOverlay.RadarFormSize(RadarInstance.ChangeSize), new object[] { Int32.Parse(txtRadarSizeX.Text), Int32.Parse(txtRadarSizeY.Text) });
@@ -1637,7 +1641,9 @@ namespace Revlex
                     cbxRadarVeins.Checked,
                     cbxSoundVeins.Checked,
                     cbxRadarHerbs.Checked,
-                    cbxSoundHerbs.Checked
+                    cbxSoundHerbs.Checked,
+                    txtRadarSearch.Text,
+                    cbxRadarSearch.Checked
                 });
         }
 
@@ -1652,6 +1658,26 @@ namespace Revlex
         private void cbxEnableBorder_CheckedChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void timerCheckErrors_Tick(object sender, EventArgs e)
+        {
+
+            // Discconect if to much Errors
+            if (WowHelperObj.DisconnectDueMaxErrors)
+            {
+                RvxButtonState(cmdAttach, 0, true);
+                RvxButtonState(cmdRefreshUi, 0, false);
+                RvxButtonState(cmdInternalUpdate, 0, false);
+                RvxButtonState(cmdRefreshActionButtonList, 9, false);
+                FirstRefreshUi = true;
+                FirstInternalUpdate = true;
+                Attached = false;
+                GotBasicData = false;
+                cbxEnableRadar.Enabled = false;
+                cbxEnableRadar.Checked = false;
+                WowHelperObj.DisconnectDueMaxErrors = false;
+            }
         }
 
 

@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Drawing.Drawing2D;
+using System.Media;
 
 namespace Revlex.RadarOverlay
 {
@@ -17,24 +18,24 @@ namespace Revlex.RadarOverlay
     //public delegate void RadarFormSize(int sX, int sY);
     //public delegate void RadarFormBorder(bool b);
     public delegate void RadarSettings(
-        int posX, 
-        int posY, 
-        int sizeX, 
-        int sizeY, 
-        bool border, 
-        bool displayEnemyPlayer, 
-        bool soundEnemyPlayer, 
-        bool displayFriendlyPLayer, 
+        int posX,
+        int posY,
+        int sizeX,
+        int sizeY,
+        bool border,
+        bool displayEnemyPlayer,
+        bool soundEnemyPlayer,
+        bool displayFriendlyPLayer,
         bool soundFriendlyPlayer,
         bool displayVeins,
         bool soundVeins,
         bool displayHerbs,
-        bool soundHerbs
+        bool soundHerbs,
+        string displaySearchObj,
+        bool soundSearch
         );
     public partial class RadarForm : Form
     {
-
-
 
 
         RECT rect;
@@ -42,8 +43,10 @@ namespace Revlex.RadarOverlay
         private int Ypos = 0;
         private int RadarSize = 0;
         private WowHelpers WowHelperObj;
-        private string Filepath = Application.StartupPath + "\\icons";
-        private Bitmap Herb_5, Herb_7, Triangle_4, Triangle_8, Circle_6, Circle_8, Cross_5, Cross_8, Caro_5, Caro_7, Dot_6, Dot_4 , playerA;
+        private string FilepathIcons = Application.StartupPath + "\\icons";
+        private string FilepathSounds = Application.StartupPath + "\\sounds";
+        private Bitmap Herb_5, Herb_7, Triangle_4, Triangle_8, Circle_6, Circle_8, Cross_5, Cross_6, Cross_8, Caro_5, Caro_7, Dot_6, Dot_4, playerA;
+        //private SoundPlayer SfxEnemy, SfxEnemyTargetMe, SfxVein, SfxHerb, SfxSearch;
         private bool BorderState;
         private bool DisplayVeins;
         private bool SoundVeins;
@@ -53,15 +56,35 @@ namespace Revlex.RadarOverlay
         private bool SoundEnemyPlayer;
         private bool DisplayFriendlyPlayer;
         private bool SoundFriendlyPlayer;
+        private string DisplaySearchObj = "";
+        private bool SoundSearch;
         private float PlayerDotRotation = 0f;
-        
+        private bool EnemyDetected = false;
+        private bool EnemyTargetsMe = false;
+        private bool VeinDetected = false;
+        private bool HerbDetected = false;
+        private bool SearchDetected = false;
+
+        private bool EnemyDetectedBeep = false;
+        private bool EnemyTargetsMeBeep = false;
+        private bool VeinDetectedBeep = false;
+        private bool HerbDetectedBeep = false;
+        private bool SearchDetectedBeep = false;
+        private double LastVeinDetectBeep = 0;
+        private double LastHerbDetectBeep = 0;
+        private double LastEnemyDetectBeep = 0;
+        private double LastSearchDetectBeep = 0;
+        private long BeepIntervall = 3000;
+
 
         public const string WINDOW_NAME = "World of Warcraft";
         IntPtr handle = FindWindow(null, WINDOW_NAME);
         Random rnd = new Random();
         private List<RadarEntity> RadarEnemyUnits = new List<RadarEntity>();
+        private List<RadarEntity> RadarFriendlyUnits = new List<RadarEntity>();
         private List<RadarEntity> RadarMiningUnits = new List<RadarEntity>();
         private List<RadarEntity> RadarHerbUnits = new List<RadarEntity>();
+        private List<RadarEntity> RadarSearchUnits = new List<RadarEntity>();
 
 
         public struct RECT
@@ -99,32 +122,13 @@ namespace Revlex.RadarOverlay
             Ypos = _ypos;
             RadarSize = _radarSize;
             ParentForm = _parentForm;
-            
+
             InitializeComponent();
-            //for (int i = 0; i < 500; i++)
-            //{
-            //    int x = rnd.Next(0, 200 - 4);
-            //    int y = rnd.Next(0, 200 - 4);
-            //    RadarUnit[i] = new RadarEntity(x, y);
-            //}
             InitializeCustomComponent();
-           
+
 
         }
 
-        //public void ChangePosition(int x, int y)
-        //{
-        //    panel1.Location = new System.Drawing.Point(x, y);
-        //}
-        //public void ChangeSize(int sX, int sY)
-        //{
-        //    panel1.Size = new System.Drawing.Size(sX, sY);
-        //}
-
-        //public void SwitchBorderState(bool b)
-        //{
-        //    BorderState = b;
-        //}
         public void SetRadarSettingsVars(
             int posX,
             int posY,
@@ -138,7 +142,9 @@ namespace Revlex.RadarOverlay
             bool displayVeins,
             bool soundVeins,
             bool displayHerbs,
-            bool soundHerbs
+            bool soundHerbs,
+            string displaySearchObj,
+            bool soundSearch
         )
         {
             panel1.Size = new System.Drawing.Size(sizeX, sizeY);
@@ -152,39 +158,10 @@ namespace Revlex.RadarOverlay
             SoundEnemyPlayer = soundEnemyPlayer;
             DisplayFriendlyPlayer = displayFriendlyPLayer;
             SoundFriendlyPlayer = soundFriendlyPlayer;
+            DisplaySearchObj = displaySearchObj;
+            SoundSearch = soundSearch;
         }
-        //public void SwitchDisplayVeins(bool b)
-        //{
-        //    DisplayVeins = b;
-        //}
-        //public void SwitchSoundVeins(bool b)
-        //{
-        //    SoundVeins = b;
-        //}
-        //public void SwitchDisplayHerbs(bool b)
-        //{
-        //    DisplayHerbs = b;
-        //}
-        //public void SwitchSoundHerbs(bool b)
-        //{
-        //    SoundHerbs = b;
-        //}
-        //public void SwitchDisplayEnemyPlayer(bool b)
-        //{
-        //    DisplayEnemyPlayer = b;
-        //}
-        //public void SwitchSoundEnemyPlayer(bool b)
-        //{
-        //    SoundEnemyPlayer = b;
-        //}
-        //public void SwitchDisplayFriendlyPlayer(bool b)
-        //{
-        //    DisplayFriendlyPlayer = b;
-        //}
-        //public void SwitchSoundFriendlyPlayer(bool b)
-        //{
-        //    SoundFriendlyPlayer = b;
-        //}
+
 
 
         public void DrawBorder()
@@ -203,26 +180,40 @@ namespace Revlex.RadarOverlay
         {
             Console.WriteLine("init2");
 
+            //// load radar sounds
+            //try
+            //{
+            //    SfxEnemy = new SoundPlayer(FilepathSounds + "\\" + "nmy.wav");
+            //    SfxEnemyTargetMe = new SoundPlayer(FilepathSounds + "\\" + "nmy_tarme.wav");
+            //    SfxVein = new SoundPlayer(FilepathSounds + "\\" + "vein.wav");
+            //    SfxHerb = new SoundPlayer(FilepathSounds + "\\" + "herb.wav");
+            //    SfxSearch = new SoundPlayer(FilepathSounds + "\\" + "search.wav");
+            //}
+            //catch (Exception e)
+            //{
+            //    Log.Print("Error loading sounds: \r\n" + e.Message, 4);
+            //}
             // load radar images
             try
             {
-                Herb_5 = new Bitmap(Filepath + "\\" + "herb_8bit_5.png");
-                Herb_7 = new Bitmap(Filepath + "\\" + "herb_8bit_5.png");
-                Triangle_4 = new Bitmap(Filepath + "\\" + "triangle_8bit_4.png");
-                Triangle_8 = new Bitmap(Filepath + "\\" + "triangle_8bit_8.png");
-                Circle_6 = new Bitmap(Filepath + "\\" + "circle_8bit_6.png");
-                Circle_8 = new Bitmap(Filepath + "\\" + "circle_8bit_8.png");
-                Cross_5 = new Bitmap(Filepath + "\\" + "cross_8bit_5.png");
-                Cross_8 = new Bitmap(Filepath + "\\" + "cross_8bit_8.png");
-                Caro_5 = new Bitmap(Filepath + "\\" + "caro_8bit_5.png");
-                Caro_7 = new Bitmap(Filepath + "\\" + "caro_8bit_7.png");
-                Dot_4 = new Bitmap(Filepath + "\\" + "dot_8bit_4.png");
-                Dot_6 = new Bitmap(Filepath + "\\" + "dot_8bit_6.png");
-                playerA = new Bitmap(Filepath + "\\" + "player_8bit_8.png");
+                Herb_5 = new Bitmap(FilepathIcons + "\\" + "herb_8bit_5.png");
+                Herb_7 = new Bitmap(FilepathIcons + "\\" + "herb_8bit_5.png");
+                Triangle_4 = new Bitmap(FilepathIcons + "\\" + "triangle_8bit_4.png");
+                Triangle_8 = new Bitmap(FilepathIcons + "\\" + "triangle_8bit_8.png");
+                Circle_6 = new Bitmap(FilepathIcons + "\\" + "circle_8bit_6.png");
+                Circle_8 = new Bitmap(FilepathIcons + "\\" + "circle_8bit_8.png");
+                Cross_5 = new Bitmap(FilepathIcons + "\\" + "cross_8bit_5.png");
+                Cross_6 = new Bitmap(FilepathIcons + "\\" + "cross_8bit_6.png");
+                Cross_8 = new Bitmap(FilepathIcons + "\\" + "cross_8bit_8.png");
+                Caro_5 = new Bitmap(FilepathIcons + "\\" + "caro_8bit_5.png");
+                Caro_7 = new Bitmap(FilepathIcons + "\\" + "caro_8bit_7.png");
+                Dot_4 = new Bitmap(FilepathIcons + "\\" + "dot_8bit_4.png");
+                Dot_6 = new Bitmap(FilepathIcons + "\\" + "dot_8bit_6.png");
+                playerA = new Bitmap(FilepathIcons + "\\" + "player_8bit_8.png");
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error loading icons: " + e.ToString());
+                Log.Print("Error loading Icons: \r\n" + e.Message, 4);
             }
             // 
             // panel1
@@ -247,7 +238,7 @@ namespace Revlex.RadarOverlay
             GfxLayer1.SmoothingMode = SmoothingMode.None;
             GfxLayer1.InterpolationMode = InterpolationMode.NearestNeighbor;
             GfxLayer1.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
-            SolidBrush friendlyBrush = new SolidBrush(Color.FromArgb(255,0,128,0));
+            SolidBrush friendlyBrush = new SolidBrush(Color.FromArgb(255, 0, 128, 0));
             SolidBrush playerBrush = new SolidBrush(Color.FromArgb(255, 255, 255, 255));
             SolidBrush blackBrush = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
             SolidBrush enemyBrush = new SolidBrush(Color.FromArgb(255, 128, 0, 0));
@@ -255,54 +246,55 @@ namespace Revlex.RadarOverlay
 
             //Bitmap image = ImageEffect.ColorTint(new Bitmap(@"D:\mbxEye_lock_closed.png"), 0, 0, 222);
             //draw units
+            if (DisplayFriendlyPlayer)
+            {
+                foreach (RadarEntity k in RadarFriendlyUnits)
+                {
+                    GfxLayer1.DrawImage(ImageEffect.ColorTint(k.IconType, k.IconColor.R, k.IconColor.G, k.IconColor.B), k.X, k.Y, k.Width, k.Height);
+                }
+            }
             if (DisplayEnemyPlayer)
             {
                 foreach (RadarEntity k in RadarEnemyUnits)
                 {
-
-                    GfxLayer1.DrawImage(ImageEffect.ColorTint(k.IconType, k.IconColor.R, k.IconColor.G, k.IconColor.B), k.X - 2, k.Y - 4, 6, 6);
+                    GfxLayer1.DrawImage(ImageEffect.ColorTint(k.IconType, k.IconColor.R, k.IconColor.G, k.IconColor.B), k.X, k.Y, k.Width, k.Height);
                 }
             }
             if (DisplayVeins)
             {
                 foreach (RadarEntity k in RadarMiningUnits)
                 {
-
-                    GfxLayer1.DrawImage(ImageEffect.ColorTint(k.IconType, k.IconColor.R, k.IconColor.G, k.IconColor.B), k.X - 2, k.Y - 6, 7, 8);
+                    GfxLayer1.DrawImage(ImageEffect.ColorTint(k.IconType, k.IconColor.R, k.IconColor.G, k.IconColor.B), k.X, k.Y, k.Width, k.Height);
                 }
             }
             if (DisplayHerbs)
             {
                 foreach (RadarEntity k in RadarHerbUnits)
                 {
-
-                    GfxLayer1.DrawImage(ImageEffect.ColorTint(k.IconType, k.IconColor.R, k.IconColor.G, k.IconColor.B), k.X - 1, k.Y - 5, 7, 6);
+                    GfxLayer1.DrawImage(ImageEffect.ColorTint(k.IconType, k.IconColor.R, k.IconColor.G, k.IconColor.B), k.X, k.Y, k.Width, k.Height);
+                }
+            }
+            if (DisplaySearchObj != "")
+            {
+                foreach (RadarEntity k in RadarSearchUnits)
+                {
+                    GfxLayer1.DrawImage(ImageEffect.ColorTint(k.IconType, k.IconColor.R, k.IconColor.G, k.IconColor.B), k.X, k.Y, k.Width, k.Height);
                 }
             }
             // draw player
-            //GfxLayer1.FillEllipse(playerBrush, (panel1.Size.Width / 2)-1, (panel1.Size.Height / 2)-5, 5, 5);
-            //GfxLayer1.DrawImage(playerA, (panel1.Size.Width / 2) - 2, (panel1.Size.Height / 2) - 6, 8, 10);
+            DrawPlayerDot(playerA, (double)(PlayerDotRotation - (Math.PI * 2)) * -1, new Point((panel1.Size.Width / 2) + 2, (panel1.Size.Height / 2) - 3), 10);
 
-            //GfxLayer1.DrawImage(ImageEffect.rotateImage2(playerA, (float)(PlayerDotRotation - (Math.PI * 2)) * -1), (panel1.Size.Width / 2) - 2, (panel1.Size.Height / 2) - 6, 8, 10);  // the rotation-float seems to be invers in wow
-            //int panelCenterX = panel1.Width / 2;
-            //int panelCenterY = panel1.Height / 2;
-            //Point[] p = new Point[] { new Point(panelCenterX - 5, panelCenterY - 5), new Point(panelCenterX + 5, panelCenterY - 0), new Point(panelCenterX - 0, panelCenterY + 5) };
-            //GfxLayer1.FillPolygon(playerBrush, p);
-
-            DrawPlayerDot(playerA, (double)(PlayerDotRotation - (Math.PI * 2)) * -1, new Point((panel1.Size.Width / 2) +2, (panel1.Size.Height / 2) - 3),10);
-
-            
             if (BorderState)
             {
                 DrawBorder();
             }
 
-            
+
 
 
         }
 
-        private void DrawPlayerDot(Bitmap player, double Rotation, Point center,int size)
+        private void DrawPlayerDot(Bitmap player, double Rotation, Point center, int size)
         {
             Pen BlackPen = new Pen(Color.Black);
             SolidBrush playerBrush = new SolidBrush(Color.FromArgb(255, 255, 255, 255));
@@ -360,8 +352,13 @@ namespace Revlex.RadarOverlay
 
         private void timerCalcRadarUnits_Tick(object sender, EventArgs e)
         {
-            WowVector3d relativeVector2d;
+            EnemyDetected = false;
+            EnemyTargetsMe = false;
+            VeinDetected = false;
+            HerbDetected = false;
+            SearchDetected = false;
 
+            WowVector3d relativeVector2d;
             // get all WowObject from mainthread
             object pulledWowHelperObj = ParentForm.Invoke(new GetWowObjDataDelegate(ParentForm.GetWowObjData));
             WowHelperObj = (WowHelpers)pulledWowHelperObj;
@@ -369,14 +366,23 @@ namespace Revlex.RadarOverlay
             SolidBrush enemyBrush = new SolidBrush(Color.FromArgb(255, 128, 0, 0));
 
 
-            //foreach (RadarEntity k in RadarUnit)
-            //{
-            //    int x = rnd.Next(0, 3) - 1;
-            //    int y = rnd.Next(0, 3) - 1;
-            //    k.X = k.X + x;
-            //    k.Y = k.Y + y;
-            //}
+
             int u;
+
+            //prepare friendly player for drawing
+            if (DisplayFriendlyPlayer)
+            {
+                RadarFriendlyUnits.Clear();
+                u = 0;
+                foreach (WowObject item in WowHelperObj.GetNearPlayerFriends())
+                {
+                    relativeVector2d = item.GetRadarPosition((uint)panel1.Size.Width, (uint)panel1.Size.Height, 230, WowHelperObj.LocalPlayer.vector3d.x, WowHelperObj.LocalPlayer.vector3d.y);
+                    Color iconColor = Color.FromArgb(64, 190, 64);
+                    RadarFriendlyUnits.Add(new RadarEntity((int)relativeVector2d.x-2, (int)relativeVector2d.y-4,6,6, iconColor, Dot_6));
+                    u++;
+                }
+            }
+
             //prepare player enemies for drawing
             if (DisplayEnemyPlayer)
             {
@@ -384,13 +390,23 @@ namespace Revlex.RadarOverlay
                 u = 0;
                 foreach (WowObject item in WowHelperObj.GetNearPlayerEnemies())
                 {
+
                     relativeVector2d = item.GetRadarPosition((uint)panel1.Size.Width, (uint)panel1.Size.Height, 230, WowHelperObj.LocalPlayer.vector3d.x, WowHelperObj.LocalPlayer.vector3d.y);
-                    int enemyShiftColor = 100 + (10 * ((int)WowHelperObj.LocalPlayer.Level - (int)item.Level));
-                    enemyShiftColor = Math.Max(Math.Min(160, enemyShiftColor), 50);
                     float shiftColor2 = 80f + ((((float)WowHelperObj.LocalPlayer.Level - (float)item.Level) * 1) * 5.333f);
                     shiftColor2 = Math.Max(Math.Max(30, shiftColor2), 120);
                     Color iconColor = Color.FromArgb(255, (int)Math.Round(shiftColor2), (int)Math.Round(shiftColor2));
-                    RadarEnemyUnits.Add(new RadarEntity((int)relativeVector2d.x, (int)relativeVector2d.y, iconColor, Dot_6));
+                    if (item.TargetGuid == WowHelperObj.LocalPlayer.Guid)
+                    {
+                        RadarEnemyUnits.Add(new RadarEntity((int)relativeVector2d.x - 2, (int)relativeVector2d.y - 5, 8, 8, iconColor, Cross_8));
+                        EnemyTargetsMe = true;
+                    }
+                    else
+                    {
+                        RadarEnemyUnits.Add(new RadarEntity((int)relativeVector2d.x - 2, (int)relativeVector2d.y - 4, 6, 6, iconColor, Dot_6));
+                    }
+
+                    EnemyDetected = true;
+                    EnemyDetectedBeep = true;
                     u++;
                 }
             }
@@ -404,7 +420,10 @@ namespace Revlex.RadarOverlay
                 {
                     relativeVector2d = item.GetRadarPosition((uint)panel1.Size.Width, (uint)panel1.Size.Height, 230, WowHelperObj.LocalPlayer.vector3d.x, WowHelperObj.LocalPlayer.vector3d.y);
                     Color iconColor = Color.FromArgb(255, 196, 0);
-                    RadarMiningUnits.Add(new RadarEntity((int)relativeVector2d.x, (int)relativeVector2d.y, iconColor, Triangle_8));
+                    RadarMiningUnits.Add(new RadarEntity((int)relativeVector2d.x-2, (int)relativeVector2d.y-6, 7, 8, iconColor, Triangle_8));
+
+                    VeinDetected = true;
+                    VeinDetectedBeep = true;
                     u++;
                 }
             }
@@ -418,12 +437,84 @@ namespace Revlex.RadarOverlay
                 {
                     relativeVector2d = item.GetRadarPosition((uint)panel1.Size.Width, (uint)panel1.Size.Height, 230, WowHelperObj.LocalPlayer.vector3d.x, WowHelperObj.LocalPlayer.vector3d.y);
                     Color iconColor = Color.FromArgb(128, 255, 64);
-                    RadarHerbUnits.Add(new RadarEntity((int)relativeVector2d.x, (int)relativeVector2d.y, iconColor, Herb_7));
+                    RadarHerbUnits.Add(new RadarEntity((int)relativeVector2d.x-1, (int)relativeVector2d.y-5, 7, 6, iconColor, Herb_7));
+
+                    HerbDetected = true;
+                    HerbDetectedBeep = true;
                     u++;
                 }
             }
 
+            if (DisplaySearchObj != "")
+            {
+                List<string> splittedSearchObj = new List<string>();
+                splittedSearchObj = DisplaySearchObj.Split(',').ToList();
+                //prepare herbs for drawing
+                RadarSearchUnits.Clear();
+                u = 0;
+                foreach (WowObject item in WowHelperObj.GetSearchObj(splittedSearchObj))
+                {
+                    relativeVector2d = item.GetRadarPosition((uint)panel1.Size.Width, (uint)panel1.Size.Height, 230, WowHelperObj.LocalPlayer.vector3d.x, WowHelperObj.LocalPlayer.vector3d.y);
+                    Color iconColor = Color.FromArgb(192, 0, 255);
+                    RadarHerbUnits.Add(new RadarEntity((int)relativeVector2d.x-2, (int)relativeVector2d.y-5, 8, 8, iconColor, Circle_8));
+
+                    SearchDetected = true;
+                    SearchDetectedBeep = true;
+                    u++;
+                    Console.WriteLine(item.Name);
+                }
+            }
+
             PlayerDotRotation = WowHelperObj.LocalPlayer.Rotation;
+            PlaySounds();
+        }
+
+        private void PlaySounds()
+        {
+
+            // Beep on vein
+            if (SoundVeins && VeinDetected && LastVeinDetectBeep + BeepIntervall < WowHelpers.GetTime())
+            {
+                Wav.Play(FilepathSounds + "\\" + "vein.wav");
+                LastVeinDetectBeep = WowHelpers.GetTime();
+            }
+            // Beep on herb
+            if (SoundHerbs && HerbDetected && LastHerbDetectBeep + BeepIntervall < WowHelpers.GetTime())
+            {
+                Wav.Play(FilepathSounds + "\\" + "herb.wav");
+                LastHerbDetectBeep = WowHelpers.GetTime();
+            }
+
+            // Beep on Search
+            if (SoundSearch && SearchDetected && LastSearchDetectBeep + BeepIntervall < WowHelpers.GetTime())
+            {
+                Wav.Play(FilepathSounds + "\\" + "search.wav");
+                LastSearchDetectBeep = WowHelpers.GetTime();
+                //delay low prio sounds
+                LastHerbDetectBeep += 300;
+                LastVeinDetectBeep += 300;
+
+            }
+            // Beep on Enemy
+            if (SoundEnemyPlayer && EnemyDetected && LastEnemyDetectBeep + BeepIntervall < WowHelpers.GetTime())
+            {
+                if (EnemyTargetsMe)
+                {
+                    Wav.Play(FilepathSounds + "\\" + "nmy_tarme.wav");
+                    LastHerbDetectBeep += 380;
+                    LastVeinDetectBeep += 380;
+                    LastSearchDetectBeep += 380;
+                }
+                else
+                {
+                    Wav.Play(FilepathSounds + "\\" + "nmy.wav");
+                    LastHerbDetectBeep += 300;
+                    LastVeinDetectBeep += 300;
+                    LastSearchDetectBeep += 300;
+                }
+                LastEnemyDetectBeep = WowHelpers.GetTime();
+            }
+
         }
 
 

@@ -116,6 +116,7 @@
     </Compile>
     <Compile Include="CustomRotation.cs" />
     <Compile Include="Descriptors.cs" />
+    <Compile Include="ErrorData.cs" />
     <Compile Include="ExtensionReplace.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -139,6 +140,7 @@
     <Compile Include="RadarOverlay\RadarForm.Designer.cs">
       <DependentUpon>RadarForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="RadarOverlay\Wav.cs" />
     <Compile Include="WowObjectCache.cs" />
     <Compile Include="PlayerRotation.cs" />
     <Compile Include="Prerequisites.cs" />

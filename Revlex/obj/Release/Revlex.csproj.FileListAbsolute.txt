@@ -30,3 +30,6 @@ c:\Users\eb\Eigene Dateien\Visual Studio 2017\Projects\Revlex\Revlex\bin\Release
 c:\Users\eb\Eigene Dateien\Visual Studio 2017\Projects\Revlex\Revlex\bin\Release\Revlex.application
 c:\Users\eb\Eigene Dateien\Visual Studio 2017\Projects\Revlex\Revlex\obj\Release\Revlex.exe.manifest
 c:\Users\eb\Eigene Dateien\Visual Studio 2017\Projects\Revlex\Revlex\obj\Release\Revlex.application
+c:\Users\eb\Eigene Dateien\Visual Studio 2017\Projects\Revlex\Revlex\bin\Release\Content\mbxEye_mouse.xnb
+c:\Users\eb\Eigene Dateien\Visual Studio 2017\Projects\Revlex\Revlex\obj\Release\Revlex.RadarOverlay.RadarForm.resources
+c:\Users\eb\Eigene Dateien\Visual Studio 2017\Projects\Revlex\Revlex\obj\Release\Revlex.csproj.CoreCompileInputs.cache

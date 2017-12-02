@@ -91,17 +91,26 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Revlex.exe" size="186768">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Revlex.exe" size="217488">
       <assemblyIdentity name="Revlex" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>P4AaVEcn88D2PQaetbI/IMZ2wZybCHX0ilop5bGyJkg=</dsig:DigestValue>
+        <dsig:DigestValue>qXBAI8YKReLwm+M2RA2O07oXUhNnEqKjk+Xsw0Crp6M=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
+  <file name="Content\mbxEye_mouse.xnb" size="1125">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>oHghMADKqkG/3PibARu/Rtm+802ky5wgIX+cVsTusVc=</dsig:DigestValue>
+    </hash>
+  </file>
   <file name="NLog.config" size="2148">
     <hash>
       <dsig:Transforms>
